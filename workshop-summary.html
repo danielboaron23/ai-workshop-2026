@@ -1,0 +1,2324 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>סיכום סדנת AI לעיצוב</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0f0f12;
+      --bg-secondary: #16161a;
+      --bg-card: #1c1c22;
+      --bg-card-hover: #242430;
+      --accent-primary: #6366f1;
+      --accent-secondary: #8b5cf6;
+      --accent-success: #10b981;
+      --accent-warning: #f59e0b;
+      --accent-error: #ef4444;
+      --accent-info: #3b82f6;
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border: #27272a;
+      --border-light: #3f3f46;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Background Pattern */
+    .bg-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Wavy Header */
+    .wavy-header {
+      position: relative;
+      width: 100%;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 48px;
+      overflow: hidden;
+      border-radius: 24px;
+      background: var(--bg-secondary);
+    }
+
+    .wavy-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .header {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .header-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #ffffff;
+      margin-bottom: 16px;
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 8px 16px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .header-title {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      color: #ffffff;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Language Toggle */
+    .lang-toggle {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 6px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .lang-btn {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: transparent;
+      color: var(--text-muted);
+    }
+
+    .lang-btn.active {
+      background: var(--accent-primary);
+      color: white;
+    }
+
+    .lang-btn:hover:not(.active) {
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+    }
+
+    /* RTL/LTR Transitions */
+    html {
+      transition: direction 0s;
+    }
+
+    [dir="ltr"] .header-subtitle,
+    [dir="ltr"] .card-text,
+    [dir="ltr"] .tool-desc,
+    [dir="ltr"] .tool-features li,
+    [dir="ltr"] .bullet-list li {
+      text-align: left;
+    }
+
+    [dir="ltr"] .bullet-list li::before {
+      right: auto;
+      left: 0;
+    }
+
+    [dir="ltr"] .bullet-list li {
+      padding-right: 0;
+      padding-left: 24px;
+    }
+
+    [dir="ltr"] .tool-features li::before {
+      right: auto;
+      left: 0;
+    }
+
+    [dir="ltr"] .tool-features li {
+      padding-right: 0;
+      padding-left: 20px;
+    }
+
+    [dir="ltr"] .tool-section-title::before {
+      margin-right: 0;
+      margin-left: 8px;
+    }
+
+    /* Tabs */
+    .tabs-container {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 8px;
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      border: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 16px 24px;
+      background: transparent;
+      border: none;
+      border-radius: 12px;
+      color: var(--text-secondary);
+      font-family: 'Heebo', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-card);
+    }
+
+    .tab-btn.active {
+      background: var(--accent-primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .tab-icon {
+      font-size: 20px;
+    }
+
+    /* Tab Content */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: var(--border-light);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      background: rgba(99, 102, 241, 0.15);
+    }
+
+    .card-icon.green { background: rgba(16, 185, 129, 0.15); }
+    .card-icon.purple { background: rgba(139, 92, 246, 0.15); }
+    .card-icon.orange { background: rgba(245, 158, 11, 0.15); }
+    .card-icon.blue { background: rgba(59, 130, 246, 0.15); }
+    .card-icon.pink { background: rgba(236, 72, 153, 0.15); }
+
+    .card-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .card-text {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* Tool List */
+    .tool-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    /* Expandable Tool Item */
+    .tool-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .tool-item:hover {
+      border-color: var(--accent-primary);
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+    }
+
+    .tool-item.expanded {
+      border-color: var(--accent-primary);
+      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2);
+    }
+
+    .tool-header {
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .tool-header-content {
+      flex: 1;
+    }
+
+    .tool-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--accent-primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tool-name-icon {
+      font-size: 18px;
+    }
+
+    .tool-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .expand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--text-muted);
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .tool-item:hover .expand-icon {
+      background: var(--accent-primary);
+      color: white;
+    }
+
+    .tool-item.expanded .expand-icon {
+      background: var(--accent-primary);
+      color: white;
+      transform: rotate(180deg);
+    }
+
+    /* Expanded Content */
+    .tool-expanded {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+      background: var(--bg-card);
+      border-top: 1px solid transparent;
+    }
+
+    .tool-item.expanded .tool-expanded {
+      max-height: 800px;
+      border-top-color: var(--border);
+    }
+
+    .tool-expanded-inner {
+      padding: 0 20px 20px 20px;
+    }
+
+    .tool-section {
+      margin-bottom: 20px;
+    }
+
+    .tool-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .tool-section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tool-section-title::before {
+      content: "";
+      width: 3px;
+      height: 14px;
+      background: var(--accent-primary);
+      border-radius: 2px;
+    }
+
+    .tool-features {
+      list-style: none;
+      padding: 0;
+    }
+
+    .tool-features li {
+      position: relative;
+      padding-right: 20px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .tool-features li::before {
+      content: "✓";
+      position: absolute;
+      right: 0;
+      color: var(--accent-success);
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .tool-tip {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .tool-tip-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .tool-use-cases {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .use-case-tag {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Download Section */
+    .download-section {
+      text-align: center;
+      padding: 80px 40px;
+    }
+
+    .download-icon {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+      margin: 0 auto 32px;
+      box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+    }
+
+    .download-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .download-subtitle {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 40px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white;
+      text-decoration: none;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+    }
+
+    .download-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
+    }
+
+    .file-info {
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Cursor Page Embed */
+    .cursor-link-section {
+      text-align: center;
+      padding: 40px;
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .cursor-link-section h3 {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+
+    .cursor-link-section p {
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .open-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background: var(--bg-secondary);
+      color: var(--accent-primary);
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 600;
+      border: 1px solid var(--accent-primary);
+      transition: all 0.3s ease;
+    }
+
+    .open-link-btn:hover {
+      background: var(--accent-primary);
+      color: white;
+    }
+
+    /* Bullet List */
+    .bullet-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .bullet-list li {
+      position: relative;
+      padding-right: 24px;
+      margin-bottom: 12px;
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .bullet-list li::before {
+      content: "→";
+      position: absolute;
+      right: 0;
+      color: var(--accent-primary);
+      font-weight: bold;
+    }
+
+    /* Tips Section */
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .tip-item {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .tip-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .tip-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Section Title */
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 32px 0 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+      font-size: 14px;
+      border-top: 1px solid var(--border);
+      margin-top: 60px;
+    }
+
+    /* Click hint */
+    .click-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 8px;
+      opacity: 0.7;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 24px 16px;
+      }
+
+      .tabs-container {
+        flex-direction: column;
+      }
+
+      .tab-btn {
+        padding: 14px 20px;
+      }
+
+      .download-section {
+        padding: 60px 24px;
+      }
+
+      .tool-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-pattern"></div>
+
+  <!-- Language Toggle -->
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLanguage('he')" data-lang="he">עב</button>
+    <button class="lang-btn" onclick="setLanguage('en')" data-lang="en">EN</button>
+  </div>
+
+  <div class="container">
+    <!-- Wavy Header -->
+    <div class="wavy-header">
+      <canvas class="wavy-canvas" id="wavy-canvas"></canvas>
+      <header class="header">
+        <span class="header-tag" data-i18n="headerTag">AI Workshop 2026</span>
+        <h1 class="header-title" data-i18n="headerTitle">סיכום סדנת AI לעיצוב</h1>
+        <p class="header-subtitle" data-i18n="headerSubtitle">כל החומרים, הכלים והטיפים מהסדנא - במקום אחד</p>
+      </header>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-container">
+      <button class="tab-btn active" onclick="switchTab('summary')">
+        <span class="tab-icon">📋</span>
+        <span data-i18n="tabSummary">סיכום הסדנא</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('download')">
+        <span class="tab-icon">📥</span>
+        <span data-i18n="tabDownload">הורדת מצגת</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('cursor')">
+        <span class="tab-icon">⌨️</span>
+        <span data-i18n="tabCursor">הסבר על Cursor</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('skills')">
+        <span class="tab-icon">⚡</span>
+        <span data-i18n="tabSkills">Claude Skills</span>
+      </button>
+    </div>
+
+    <!-- Tab 1: Summary -->
+    <div id="summary" class="tab-content active">
+
+      <!-- Intro -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">🎯</div>
+          <div>
+            <div class="card-title" data-i18n="introTitle">שמירה על המומנטום</div>
+            <div class="card-subtitle" data-i18n="introSubtitle">כל מה שצריך להמשיך הלאה</div>
+          </div>
+        </div>
+        <p class="card-text" data-i18n="introText">
+          ריכזתי עבורכם את כל החומרים, הכלים, הטיפים ושלבי ההמשך.
+          הקדשתי זמן לארוז את כל מה שעברנו יחד בצורה מסודרת, כדי שיהיה לכם כלי עבודה ברור ונגיש להמשך - ולא תצטרכו "לרדוף" אחרי הפרטים.
+        </p>
+      </div>
+
+      <!-- Research Tools -->
+      <h3 class="section-title" data-i18n="sectionResearch">🔬 מחקר, יצירת GPTs ו-Gems</h3>
+      <p class="click-hint" data-i18n="clickHint">לחצו על כל כלי לפרטים נוספים ↓</p>
+      <div class="tool-list">
+
+        <!-- Gemini Canvas -->
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">🎨</span> Gemini Canvas</div>
+              <div class="tool-desc">מאפשר להפוך תוכן או נתונים לפורמטים שונים – אתר, אינפוגרפיקה, חידון או סיכום קולי.</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="whatCanDo">מה אפשר לעשות</div>
+                <ul class="tool-features">
+                  <li>להפוך מסמך טקסט לאינפוגרפיקה ויזואלית</li>
+                  <li>ליצור אתר אינטראקטיבי מתוך נתונים</li>
+                  <li>לבנות חידון או משחק מתוך תוכן לימודי</li>
+                  <li>ליצור סיכום קולי (פודקאסט) מתוך מאמר</li>
+                  <li>להמיר טבלת נתונים לגרף אינטראקטיבי</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="useCases">Use Cases למעצבים</div>
+                <div class="tool-use-cases">
+                  <span class="use-case-tag">פרזנטציות ללקוחות</span>
+                  <span class="use-case-tag">תוכן שיווקי</span>
+                  <span class="use-case-tag">הדרכות</span>
+                  <span class="use-case-tag">סיכומי מחקר</span>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-tip">
+                  <span class="tool-tip-icon">💡</span>
+                  <span>טיפ: התחילו עם תוכן פשוט ובקשו מ-Gemini להציע פורמטים מתאימים לפני שבוחרים</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gems -->
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">💎</span> Gems (Google)</div>
+              <div class="tool-desc">מאפשרים ליצור כלים מותאמים אישית שמתחברים ישירות ל-Google Workspace.</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="whatCanDo">מה אפשר לעשות</div>
+                <ul class="tool-features">
+                  <li>לחבר ישירות ל-Google Docs, Sheets ו-Slides</li>
+                  <li>ליצור אוטומציות לעיבוד מסמכים</li>
+                  <li>לבנות כלי שמייצר תבניות מותאמות</li>
+                  <li>לנתח נתונים מ-Sheets ולהפוך לתובנות</li>
+                  <li>ליצור מצגות אוטומטיות מתוך טקסט</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="useCases">Use Cases למעצבים</div>
+                <div class="tool-use-cases">
+                  <span class="use-case-tag">ניהול פרויקטים</span>
+                  <span class="use-case-tag">דוחות אוטומטיים</span>
+                  <span class="use-case-tag">תיעוד עיצוב</span>
+                  <span class="use-case-tag">סיכומי פגישות</span>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-tip">
+                  <span class="tool-tip-icon">💡</span>
+                  <span>טיפ: השתמשו ב-Gems לאוטומציה של משימות חוזרות שדורשות עבודה עם Google Workspace</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GPTs -->
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">🤖</span> GPTs מותאמים</div>
+              <div class="tool-desc">נכנסים ל-Webview, בוחרים ב-GPTs ולוחצים "Create". אפשר להשתמש ב-Knowledge Base לאמן GPT על מידע ספציפי.</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title">איך ליצור GPT מותאם</div>
+                <ul class="tool-features">
+                  <li>נכנסים ל-ChatGPT → Explore GPTs → Create</li>
+                  <li>מגדירים את ההתנהגות והסגנון הרצוי</li>
+                  <li>מעלים Knowledge Base (ZIP עם קבצי ייחוס)</li>
+                  <li>מכבים Web Search אם רוצים רק מידע פנימי</li>
+                  <li>משתפים עם הצוות או שומרים לשימוש אישי</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="useCases">Use Cases למעצבים</div>
+                <div class="tool-use-cases">
+                  <span class="use-case-tag">כתיבת UX Copy</span>
+                  <span class="use-case-tag">Brand Voice</span>
+                  <span class="use-case-tag">מחקר משתמשים</span>
+                  <span class="use-case-tag">תיעוד עיצוב</span>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-tip">
+                  <span class="tool-tip-icon">💡</span>
+                  <span>טיפ: צרו ZIP עם קבצי PNG של עיצובים, מחקרים ומסמכי Brand כדי לאמן GPT שמכיר את הפרויקט שלכם</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skills -->
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">⚡</span> Skills (Claude)</div>
+              <div class="tool-desc">"מדריכי עבודה" מותאמים אישית. במקום להסביר כל פעם מחדש, יוצרים skill שמלמד את התהליך המדויק.</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title">איך ליצור Skill</div>
+                <ul class="tool-features">
+                  <li>אומרים ל-Claude "בוא נבנה skill ש..."</li>
+                  <li>Claude יוצר קובץ SKILL.md עם הוראות</li>
+                  <li>אפשר להוסיף קבצים נוספים לדוגמאות</li>
+                  <li>מעלים ב-Settings → Skills → Upload</li>
+                  <li>Claude מזהה אוטומטית מתי להשתמש</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="useCases">Use Cases למעצבים</div>
+                <div class="tool-use-cases">
+                  <span class="use-case-tag">Prompts ל-Figma Make</span>
+                  <span class="use-case-tag">כתיבת דוחות</span>
+                  <span class="use-case-tag">עיבוד מחקר</span>
+                  <span class="use-case-tag">תבניות קבועות</span>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-tip">
+                  <span class="tool-tip-icon">💡</span>
+                  <span>טיפ: הכי שימושי למשימות חוזרות עם מבנה דומה - חסכו זמן על הסברים חוזרים</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deep Research -->
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">🔍</span> Deep Research</div>
+              <div class="tool-desc">זמין ב-ChatGPT ו-Gemini. ללמוד נושא חדש במהירות, להעלות מסמכים ולתת ל-AI לארגן ולחשוף תובנות.</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="whatCanDo">מה אפשר לעשות</div>
+                <ul class="tool-features">
+                  <li>ללמוד תחום חדש במהירות עם שאלות חכמות</li>
+                  <li>להעלות מסמכים ומחקרי משתמשים לניתוח</li>
+                  <li>לקבל סיכום ממוקד של מקורות מרובים</li>
+                  <li>לזהות דפוסים ותובנות במידע גולמי</li>
+                  <li>ליצור דוח מחקר מסודר עם מקורות</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="useCases">Use Cases למעצבים</div>
+                <div class="tool-use-cases">
+                  <span class="use-case-tag">מחקר שוק</span>
+                  <span class="use-case-tag">ניתוח מתחרים</span>
+                  <span class="use-case-tag">למידת תחום</span>
+                  <span class="use-case-tag">הכנה לפרויקט</span>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-tip">
+                  <span class="tool-tip-icon">💡</span>
+                  <span>טיפ: השתמשו ב-Deep Research לפני שמתחילים פרויקט חדש בתחום שאתם פחות מכירים</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notebook LM -->
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">📓</span> Notebook LM</div>
+              <div class="tool-desc">עוזר חכם למחקר של Google – מעלים מסמכים ומקבלים סיכומים, תובנות וויזואליזציה של מידע.</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="whatCanDo">מה אפשר לעשות</div>
+                <ul class="tool-features">
+                  <li>להעלות PRDs, סיכומי מחקר, הערות פגישות</li>
+                  <li>לקבל סיכומים אוטומטיים של כל המסמכים</li>
+                  <li>לשאול שאלות ולקבל תשובות עם הפניות</li>
+                  <li>ליצור Audio Overview (סיכום כפודקאסט!)</li>
+                  <li>לזהות קשרים בין מסמכים שונים</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="useCases">Use Cases למעצבים</div>
+                <div class="tool-use-cases">
+                  <span class="use-case-tag">ניתוח מחקר משתמשים</span>
+                  <span class="use-case-tag">סיכום פגישות</span>
+                  <span class="use-case-tag">תיעוד פרויקט</span>
+                  <span class="use-case-tag">Onboarding</span>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-tip">
+                  <span class="tool-tip-icon">💡</span>
+                  <span>טיפ: השתמשו ב-Audio Overview כדי "להאזין" לסיכום בזמן נסיעה או הליכה</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Design Tools -->
+      <h3 class="section-title" data-i18n="sectionDesign">🎨 עיצוב ופרוטוטייפינג</h3>
+      <p class="click-hint" data-i18n="clickHint">לחצו על כל כלי לפרטים נוספים ↓</p>
+      <div class="tool-list">
+
+        <!-- FigJam AI -->
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">🧩</span> FigJam AI</div>
+              <div class="tool-desc">כלי מצוין לסיעור מוחות ולסדנאות – יצירת מפת חשיבה או קיבוץ פתקים לפי נושאים.</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="whatCanDo">מה אפשר לעשות</div>
+                <ul class="tool-features">
+                  <li>ליצור מפת חשיבה אוטומטית מנושא</li>
+                  <li>לקבץ פתקים לפי נושאים וקטגוריות</li>
+                  <li>לסכם דיון או סיעור מוחות</li>
+                  <li>ליצור User Journey מתיאור טקסטואלי</li>
+                  <li>להפוך רשימה ל-Diagram ויזואלי</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="recommendedPlugin">תוסף מומלץ</div>
+                <div class="tool-tip" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(99, 102, 241, 0.05)); border-color: rgba(99, 102, 241, 0.2);">
+                  <span class="tool-tip-icon">🔌</span>
+                  <span><strong>Jambot</strong> - תוסף חובה לעבודה עם AI ב-FigJam. מרחיב את היכולות ומאפשר אינטראקציה חכמה יותר.</span>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="useCases">Use Cases למעצבים</div>
+                <div class="tool-use-cases">
+                  <span class="use-case-tag">סדנאות צוות</span>
+                  <span class="use-case-tag">Discovery</span>
+                  <span class="use-case-tag">Ideation</span>
+                  <span class="use-case-tag">תכנון פרויקט</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Figma AI -->
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">✨</span> Figma AI</div>
+              <div class="tool-desc">יצירת לייאאוטים, תמונות וגרסאות עיצוב. שדרוג טקסטים וויזואלים. ניהול קבצים.</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="whatCanDo">מה אפשר לעשות</div>
+                <ul class="tool-features">
+                  <li>ליצור לייאאוטים ראשוניים מתיאור</li>
+                  <li>לייצר תמונות ואיורים ישירות ב-Figma</li>
+                  <li>ליצור גרסאות עיצוב שונות (A/B)</li>
+                  <li>לשדרג ולשכתב טקסטים (UX Writing)</li>
+                  <li>לשנות שמות שכבות אוטומטית</li>
+                  <li>לחפש אלמנטים לפי תמונה דומה</li>
+                  <li>להוסיף אינטראקציות בקליק</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="useCases">Use Cases למעצבים</div>
+                <div class="tool-use-cases">
+                  <span class="use-case-tag">אקספלורציה מהירה</span>
+                  <span class="use-case-tag">Content Design</span>
+                  <span class="use-case-tag">ניקוי קבצים</span>
+                  <span class="use-case-tag">Placeholder Images</span>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-tip">
+                  <span class="tool-tip-icon">💡</span>
+                  <span>טיפ: השתמשו ב-AI לשלב הראשוני של אקספלורציה, ואז שפרו ידנית</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Figma Make -->
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">🚀</span> Figma Make</div>
+              <div class="tool-desc">בניית פרוטוטייפים אינטראקטיביים וריאליסטיים. לתכנן מראש, לשנות דבר אחד בכל פעם.</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="whatCanDo">מה אפשר לעשות</div>
+                <ul class="tool-features">
+                  <li>לבנות פרוטוטייפ מתיאור טקסטואלי</li>
+                  <li>להוסיף אינטראקציות ואנימציות</li>
+                  <li>ליצור Flows שלמים עם מעברים</li>
+                  <li>לערוך בצורה נקודתית עם Point & Edit</li>
+                  <li>לייצא קוד לפיתוח</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title">שיטת 3C's לפרומפטינג</div>
+                <div class="tips-grid" style="margin-top: 12px;">
+                  <div class="tip-item" style="padding: 12px;">
+                    <div class="tip-title" style="font-size: 12px;">Clarity</div>
+                    <div class="tip-text" style="font-size: 12px;">להיות ברור לגבי מה שרוצים</div>
+                  </div>
+                  <div class="tip-item" style="padding: 12px;">
+                    <div class="tip-title" style="font-size: 12px;">Context</div>
+                    <div class="tip-text" style="font-size: 12px;">לתת רקע ומידע רלוונטי</div>
+                  </div>
+                  <div class="tip-item" style="padding: 12px;">
+                    <div class="tip-title" style="font-size: 12px;">Constraints</div>
+                    <div class="tip-text" style="font-size: 12px;">להגדיר גבולות ומגבלות</div>
+                  </div>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-tip">
+                  <span class="tool-tip-icon">💡</span>
+                  <span>טיפ: תכננו מראש את ה-Flow, ושנו דבר אחד בכל פעם - כך תקבלו תוצאות טובות יותר</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cursor -->
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">⌨️</span> Cursor</div>
+              <div class="tool-desc">עורך קוד מבוסס AI שמאפשר למעצבים לבנות פרוטוטייפים אינטראקטיביים מהירים בלי לדעת לקוד.</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title">למה זה Game Changer למעצבים</div>
+                <ul class="tool-features">
+                  <li>מעלים Screenshot מ-Figma → מקבלים קוד</li>
+                  <li>פרוטוטייפים שבאמת עובדים (לא רק Clickthrough)</li>
+                  <li>שיחה טבעית: "תוסיף כפתור כחול כאן"</li>
+                  <li>איטרציה מהירה עם Feedback מיידי</li>
+                  <li>Composer Mode לפרויקטים מורכבים</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="useCases">Use Cases למעצבים</div>
+                <div class="tool-use-cases">
+                  <span class="use-case-tag">פרזנטציות ללקוחות</span>
+                  <span class="use-case-tag">User Testing</span>
+                  <span class="use-case-tag">הוכחת קונספט</span>
+                  <span class="use-case-tag">תקשורת עם Devs</span>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-tip">
+                  <span class="tool-tip-icon">💡</span>
+                  <span>טיפ: עברו לטאב "הסבר על Cursor" למדריך המלא עם כל הפרטים</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Animation Tools -->
+      <h3 class="section-title" data-i18n="sectionAnimation">✨ אנימציות ואיורים</h3>
+      <p class="click-hint" data-i18n="clickHint">לחצו על כל כלי לפרטים נוספים ↓</p>
+      <div class="tool-list">
+
+        <!-- LottieFiles -->
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">🎬</span> LottieFiles</div>
+              <div class="tool-desc">פלטפורמה ליצירה ועריכת אנימציות לוטי בעזרת AI. תוסף: Motion Co-pilot.</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="whatCanDo">מה אפשר לעשות</div>
+                <ul class="tool-features">
+                  <li>ליצור אנימציות Lottie מתיאור טקסטואלי</li>
+                  <li>לערוך אנימציות קיימות בקלות</li>
+                  <li>לשנות צבעים, מהירות וסגנון</li>
+                  <li>לייצא לכל פורמט (JSON, GIF, MP4)</li>
+                  <li>ספריה ענקית של אנימציות מוכנות</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="recommendedPlugin">תוסף מומלץ</div>
+                <div class="tool-tip" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(99, 102, 241, 0.05)); border-color: rgba(99, 102, 241, 0.2);">
+                  <span class="tool-tip-icon">🔌</span>
+                  <span><strong>Motion Co-pilot</strong> - עורך אנימציות חכם שמאפשר לשנות ולהתאים אנימציות בממשק ויזואלי פשוט</span>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="useCases">Use Cases למעצבים</div>
+                <div class="tool-use-cases">
+                  <span class="use-case-tag">Loading States</span>
+                  <span class="use-case-tag">Micro-interactions</span>
+                  <span class="use-case-tag">Onboarding</span>
+                  <span class="use-case-tag">Empty States</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Magic Animator -->
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">🪄</span> Magic Animator</div>
+              <div class="tool-desc">פלאגין ליצירת אנימציות פשוטות ישירות מתוך Figma.</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="whatCanDo">מה אפשר לעשות</div>
+                <ul class="tool-features">
+                  <li>ליצור אנימציות ישירות ב-Figma</li>
+                  <li>להנפיש אלמנטים בודדים או קבוצות</li>
+                  <li>Presets מוכנים לאנימציות נפוצות</li>
+                  <li>לייצא ל-Lottie או GIF</li>
+                  <li>ממשק פשוט ואינטואיטיבי</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="useCases">Use Cases למעצבים</div>
+                <div class="tool-use-cases">
+                  <span class="use-case-tag">אייקונים מונפשים</span>
+                  <span class="use-case-tag">כפתורים</span>
+                  <span class="use-case-tag">Transitions</span>
+                  <span class="use-case-tag">Hover States</span>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-tip">
+                  <span class="tool-tip-icon">💡</span>
+                  <span>טיפ: מתאים לאנימציות פשוטות ומהירות. לאנימציות מורכבות - עברו ל-LottieFiles</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vectorizer.AI -->
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">🔷</span> Vectorizer.AI</div>
+              <div class="tool-desc">המרה של תמונות/איורים לקבצי וקטור נקיים.</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="whatCanDo">מה אפשר לעשות</div>
+                <ul class="tool-features">
+                  <li>להמיר PNG/JPG לקובץ וקטור (SVG)</li>
+                  <li>לקבל קווים חלקים ונקיים</li>
+                  <li>לשמור על איכות בכל גודל</li>
+                  <li>תוצאות טובות יותר מכלים אחרים</li>
+                  <li>תומך בתמונות מורכבות ואיורים</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title" data-i18n="useCases">Use Cases למעצבים</div>
+                <div class="tool-use-cases">
+                  <span class="use-case-tag">לוגואים</span>
+                  <span class="use-case-tag">אייקונים</span>
+                  <span class="use-case-tag">איורים</span>
+                  <span class="use-case-tag">סקיצות לוקטור</span>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-tip">
+                  <span class="tool-tip-icon">💡</span>
+                  <span>טיפ: עובד הכי טוב עם תמונות בעלות קונטרסט גבוה וקווים ברורים</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tips -->
+      <h3 class="section-title" data-i18n="sectionTips">💡 טיפים לפרומפטינג - 3C's</h3>
+      <div class="tips-grid">
+        <div class="tip-item">
+          <div class="tip-title" data-i18n="clarity">Clarity</div>
+          <div class="tip-text" data-i18n="clarityDesc">להיות ברור לגבי מה שרוצים - תארו בדיוק את התוצאה הרצויה</div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-title" data-i18n="context">Context</div>
+          <div class="tip-text" data-i18n="contextDesc">לתת רקע ומידע רלוונטי - פלטפורמה, קהל יעד, סגנון</div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-title" data-i18n="constraints">Constraints</div>
+          <div class="tip-text" data-i18n="constraintsDesc">להגדיר גבולות ומגבלות - גודל, צבעים, מה לא לעשות</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Tab 2: Download -->
+    <div id="download" class="tab-content">
+      <div class="card">
+        <div class="download-section">
+          <div class="download-icon">📑</div>
+          <h2 class="download-title" data-i18n="downloadTitle">מצגת סיכום הסדנא</h2>
+          <p class="download-subtitle" data-i18n="downloadSubtitle">המצגת המלאה עם כל החומרים והדוגמאות מהסדנא</p>
+          <a href="AI Workshop.pdf" download class="download-btn">
+            <span>📥</span>
+            <span data-i18n="downloadBtn">הורד מצגת PDF</span>
+          </a>
+          <p class="file-info">AI Workshop.pdf • ~116 MB</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Cursor -->
+    <div id="cursor" class="tab-content">
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon purple">⌨️</div>
+          <div>
+            <div class="card-title" data-i18n="cursorTitle">Cursor למעצבים</div>
+            <div class="card-subtitle" data-i18n="cursorSubtitle">עורך קוד מבוסס AI לבניית פרוטוטייפים</div>
+          </div>
+        </div>
+        <p class="card-text" data-i18n="cursorIntro">
+          Cursor מאפשר למעצבים לבנות פרוטוטייפים אינטראקטיביים מהירים בלי לדעת לקוד.
+          במקום להסתמך על developer או ללמוד תכנות מאפס, אפשר לתאר מה רוצים ו-Cursor בונה את זה.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon green">🎯</div>
+          <div>
+            <div class="card-title" data-i18n="whyGameChanger">למה זה משנה משחק למעצבים?</div>
+          </div>
+        </div>
+        <ul class="bullet-list">
+          <li><strong>מהעיצוב לקוד:</strong> מעלים screenshot מ-Figma ו-Cursor יוצר את הקוד המתאים</li>
+          <li><strong>פרוטוטייפים אמיתיים:</strong> לא סתם clickthrough – אפשר לבנות דברים שבאמת עובדים</li>
+          <li><strong>שיחה טבעית:</strong> "תוסיף כפתור כחול כאן", "תעשה את זה responsive"</li>
+          <li><strong>איטרציה מהירה:</strong> לשנות, לבדוק, לקבל feedback מיידית</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon orange">🛠️</div>
+          <div>
+            <div class="card-title" data-i18n="whatWeLearnedTitle">מה עברנו בסדנא?</div>
+          </div>
+        </div>
+        <ul class="bullet-list">
+          <li>התחלה: איך מתקינים ומגדירים את Cursor</li>
+          <li>מהעיצוב לקוד: העלאת עיצובים מ-Figma והפיכתם ל-HTML/React</li>
+          <li>Composer Mode: לבניית פרוטוטייפים מורכבים בשיחה אחת ארוכה</li>
+          <li>לתת קונטקסט ברור (פלטפורמה, סגנון, התנהגות)</li>
+          <li>לעבוד צעד אחר צעד ולא הכל בבת אחת</li>
+          <li>להשתמש ב-@files כדי לחבר קבצים קיימים</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon blue">💼</div>
+          <div>
+            <div class="card-title" data-i18n="useCasesDesigners">Use Cases למעצבים</div>
+          </div>
+        </div>
+        <ul class="bullet-list">
+          <li><strong>פרזנטציות ללקוחות:</strong> להראות פרוטוטייפ אמיתי במקום mockup</li>
+          <li><strong>User Testing:</strong> לבדוק flows עם אינטראקציות אמיתיות</li>
+          <li><strong>הוכחת קונספט:</strong> לבדוק אם רעיון טכנית אפשרי לפני להשקיע בעיצוב מלא</li>
+          <li><strong>תקשורת עם developers:</strong> להראות בדיוק מה רוצים</li>
+        </ul>
+      </div>
+
+      <div class="cursor-link-section">
+        <h3 data-i18n="fullGuideTitle">המדריך המלא על Cursor</h3>
+        <p data-i18n="fullGuideDesc">לחצו לפתיחת המדריך המפורט עם כל השלבים והטיפים</p>
+        <a href="Cursor-Workshop-2025 copy.html" class="open-link-btn" target="_blank">
+          <span>🔗</span>
+          <span data-i18n="openFullGuide">פתח את המדריך המלא</span>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Tab 4: Claude Skills -->
+    <div id="skills" class="tab-content">
+
+      <!-- Intro -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon purple">⚡</div>
+          <div>
+            <div class="card-title" data-i18n="skillsTitle">Claude Skills</div>
+            <div class="card-subtitle" data-i18n="skillsSubtitle">הפכו את Claude למומחה בתחום שלכם</div>
+          </div>
+        </div>
+        <p class="card-text" data-i18n="skillsIntro">
+          Skills הם יכולות מודולריות שמרחיבות את Claude. כל Skill מארז הוראות, מטא-דאטה ומשאבים (סקריפטים, תבניות) ש-Claude משתמש בהם אוטומטית כשמשימות רלוונטיות עולות.
+          במקום להסביר לClaude כל פעם מחדש איך לעשות משהו - יוצרים פעם אחת Skill שמלמד אותו את התהליך המדויק.
+        </p>
+      </div>
+
+      <!-- What are Skills -->
+      <h3 class="section-title" data-i18n="sectionSkillsWhat">🎯 מה זה Skills?</h3>
+      <div class="tool-list">
+
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">📦</span> יכולות מודולריות</div>
+              <div class="tool-desc">Skills מרחיבים את היכולות של Claude בצורה ממוקדת ומותאמת אישית</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title">מאפיינים עיקריים</div>
+                <ul class="tool-features">
+                  <li><strong>Markdown-based:</strong> קבצי Markdown שמלמדים את Claude תהליכי עבודה ספציפיים</li>
+                  <li><strong>Reusable:</strong> יוצרים פעם אחת, משתמשים אוטומטית בכל שיחה רלוונטית</li>
+                  <li><strong>Progressive Loading:</strong> מידע נטען בשלבים לפי הצורך, לא הכל בבת אחת</li>
+                  <li><strong>Domain-Specific:</strong> הופכים את Claude מעוזר כללי למומחה בתחום</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title">למה להשתמש ב-Skills?</div>
+                <div class="tool-use-cases">
+                  <span class="use-case-tag">התמחות בתחום</span>
+                  <span class="use-case-tag">הפחתת חזרות</span>
+                  <span class="use-case-tag">שילוב יכולות</span>
+                  <span class="use-case-tag">עקביות</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">📁</span> מבנה הקבצים</div>
+              <div class="tool-desc">Skill מורכב מקובץ SKILL.md ראשי ואופציונלית קבצים נוספים</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title">מבנה בסיסי</div>
+                <div class="code-block">
+<pre style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-secondary); overflow-x: auto; direction: ltr; text-align: left;">
+your-skill/
+└── SKILL.md              # קובץ ההוראות הראשי
+</pre>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title">מבנה מתקדם</div>
+                <div class="code-block">
+<pre style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-secondary); overflow-x: auto; direction: ltr; text-align: left;">
+figma-make-skill/
+├── SKILL.md              # הוראות ראשיות
+├── EXAMPLES.md           # דוגמאות שימוש
+├── GUIDELINES.md         # הנחיות מפורטות
+└── templates/
+    └── prompt-template.md
+</pre>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-tip">
+                  <span class="tool-tip-icon">💡</span>
+                  <span>טיפ: שמרו על SKILL.md קצר (עד 500 שורות) והפנו לקבצים נוספים לפרטים מעמיקים</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">📝</span> תבנית SKILL.md</div>
+              <div class="tool-desc">המבנה הבסיסי של קובץ Skill עם YAML frontmatter והוראות</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title">תבנית בסיסית</div>
+                <div class="code-block">
+<pre style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-secondary); overflow-x: auto; direction: ltr; text-align: left;">
+---
+name: your-skill-name
+description: Brief description of what this
+Skill does and when to use it
+---
+
+# Your Skill Name
+
+## Instructions
+[Clear, step-by-step guidance for Claude]
+
+## Examples
+[Concrete examples of using this Skill]
+</pre>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title">חוקי שמות</div>
+                <ul class="tool-features">
+                  <li>מקסימום 64 תווים</li>
+                  <li>רק אותיות קטנות, מספרים ומקפים</li>
+                  <li>השתמשו בפועל+ing: <code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px;">processing-pdfs</code>, <code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px;">creating-prompts</code></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">📥</span> איך מתקינים</div>
+              <div class="tool-desc">התקנת Skills ב-Claude Code, Claude.ai ו-API</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title">Claude Code (מומלץ)</div>
+                <ul class="tool-features">
+                  <li><strong>אישי:</strong> <code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px;">~/.claude/skills/</code> - זמין לכם בכל הפרויקטים</li>
+                  <li><strong>פרויקט:</strong> <code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px;">.claude/skills/</code> - זמין לכל מי שעובד על הפרויקט</li>
+                  <li>Claude מזהה אוטומטית Skills בתיקיות אלה</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title">Claude.ai</div>
+                <ul class="tool-features">
+                  <li>Settings → Features</li>
+                  <li>העלאת Skills כקבצי ZIP</li>
+                  <li>זמין ל-Pro, Max, Team, Enterprise</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-tip">
+                  <span class="tool-tip-icon">💡</span>
+                  <span>טיפ: השתמשו ב-<code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px;">claude --debug</code> כדי לראות שגיאות בטעינת Skills</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Our Skills Examples -->
+      <h3 class="section-title" data-i18n="sectionSkillsOurs">🎨 Skills שיצרנו בסדנא</h3>
+      <p class="click-hint" data-i18n="clickHintSkills">לחצו לראות את ה-Skills שבנינו יחד ↓</p>
+      <div class="tool-list">
+
+        <!-- Figma Make Prompter -->
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">🚀</span> Figma Make Prompter</div>
+              <div class="tool-desc">Skill ליצירת פרומפטים מושלמים ל-Figma Make - מתרגם את הצרכים שלכם לפרומפטים אפקטיביים</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title">מה ה-Skill עושה</div>
+                <ul class="tool-features">
+                  <li>מייצר פרומפטים מותאמים ל-Figma Make</li>
+                  <li>מיישם את שיטת 3C's אוטומטית (Clarity, Context, Constraints)</li>
+                  <li>מתאים את הפרומפט לסוג המשימה (UI, אנימציה, תוכן)</li>
+                  <li>כולל best practices לתוצאות טובות יותר</li>
+                  <li>מציע וריאציות ושיפורים לפרומפט</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title">דוגמת שימוש</div>
+                <div class="tool-tip" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(99, 102, 241, 0.05)); border-color: rgba(99, 102, 241, 0.2);">
+                  <span class="tool-tip-icon">💬</span>
+                  <span><strong>אתם:</strong> "אני צריך דף התחברות לאפליקציית בריאות"<br><br><strong>Claude (עם ה-Skill):</strong> "הנה פרומפט מותאם ל-Figma Make:<br><em>Create a login screen for a health app. Include email and password fields, a 'Forgot password' link, social login options (Google, Apple), and a registration CTA. Use a calming color palette with soft blues and greens. Mobile-first design, 375px width.</em>"</span>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title">מתי להשתמש</div>
+                <div class="tool-use-cases">
+                  <span class="use-case-tag">יצירת מסכים חדשים</span>
+                  <span class="use-case-tag">עיצוב קומפוננטות</span>
+                  <span class="use-case-tag">פרוטוטייפים מהירים</span>
+                  <span class="use-case-tag">אקספלורציה</span>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title">קוד ה-Skill</div>
+                <div class="code-block">
+<pre style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-secondary); overflow-x: auto; direction: ltr; text-align: left; max-height: 300px;">
+---
+name: figma-make-prompter
+description: Generates optimized prompts for
+Figma Make. Use when the user wants to create
+UI designs, screens, or components using Figma
+Make, or asks for help writing Figma prompts.
+---
+
+# Figma Make Prompt Generator
+
+## Overview
+This skill helps create effective prompts for
+Figma Make by applying the 3C's methodology.
+
+## The 3C's Framework
+
+### Clarity
+Be specific about what you want:
+- Screen type (login, dashboard, settings)
+- Key elements to include
+- Primary user action
+
+### Context
+Provide relevant background:
+- App type/industry
+- Target platform (mobile, web, tablet)
+- Design style (minimal, playful, corporate)
+
+### Constraints
+Define boundaries:
+- Screen dimensions
+- Color limitations
+- Must-have vs nice-to-have elements
+
+## Prompt Template
+
+When generating a prompt, use this structure:
+
+```
+Create a [screen type] for a [app type] app.
+
+Include:
+- [Key element 1]
+- [Key element 2]
+- [Key element 3]
+
+Style: [Design style description]
+Platform: [Target platform, dimensions]
+```
+
+## Examples
+
+**User request:** "Login page for fitness app"
+
+**Generated prompt:**
+"Create a login screen for a fitness tracking
+app. Include email/password fields, social
+login buttons (Google, Apple), 'Forgot password'
+link, and a motivational fitness image or
+illustration. Use energetic colors (orange
+accents) with a clean white background.
+Mobile-first, 375px width."
+</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Figma Make Guidelines -->
+        <div class="tool-item" onclick="toggleTool(this)">
+          <div class="tool-header">
+            <div class="tool-header-content">
+              <div class="tool-name"><span class="tool-name-icon">📋</span> Figma Make Guidelines</div>
+              <div class="tool-desc">Skill עם הנחיות ו-best practices לעבודה יעילה עם Figma Make</div>
+            </div>
+            <div class="expand-icon">▼</div>
+          </div>
+          <div class="tool-expanded">
+            <div class="tool-expanded-inner">
+              <div class="tool-section">
+                <div class="tool-section-title">מה ה-Skill עושה</div>
+                <ul class="tool-features">
+                  <li>מספק הנחיות לעבודה אפקטיבית עם Figma Make</li>
+                  <li>כולל טיפים לשיפור תוצאות</li>
+                  <li>מסביר מגבלות ואיך לעקוף אותן</li>
+                  <li>מציע תהליך עבודה מומלץ</li>
+                  <li>כולל דוגמאות של Do's ו-Don'ts</li>
+                </ul>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title">עקרונות מפתח</div>
+                <div class="tips-grid" style="margin-top: 12px;">
+                  <div class="tip-item" style="padding: 12px;">
+                    <div class="tip-title" style="font-size: 11px;">תכנון מראש</div>
+                    <div class="tip-text" style="font-size: 11px;">תכננו את ה-Flow לפני שמתחילים</div>
+                  </div>
+                  <div class="tip-item" style="padding: 12px;">
+                    <div class="tip-title" style="font-size: 11px;">צעד אחר צעד</div>
+                    <div class="tip-text" style="font-size: 11px;">שנו דבר אחד בכל פעם</div>
+                  </div>
+                  <div class="tip-item" style="padding: 12px;">
+                    <div class="tip-title" style="font-size: 11px;">Point & Edit</div>
+                    <div class="tip-text" style="font-size: 11px;">לשינויים נקודתיים מהירים</div>
+                  </div>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-section-title">קוד ה-Skill</div>
+                <div class="code-block">
+<pre style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-secondary); overflow-x: auto; direction: ltr; text-align: left; max-height: 300px;">
+---
+name: figma-make-guidelines
+description: Provides best practices and
+guidelines for working with Figma Make. Use
+when helping users improve their Figma Make
+workflow or troubleshoot issues.
+---
+
+# Figma Make Guidelines
+
+## Workflow Best Practices
+
+### Before Starting
+1. Define the end goal clearly
+2. Break complex designs into steps
+3. Gather reference images if needed
+4. Know your constraints (size, style)
+
+### During Creation
+1. Start simple, add complexity gradually
+2. One change at a time - easier to iterate
+3. Use Point & Edit for quick fixes
+4. Save versions before major changes
+
+### Common Pitfalls to Avoid
+- DON'T: Ask for everything in one prompt
+- DON'T: Use vague descriptions
+- DON'T: Ignore platform constraints
+- DON'T: Skip the planning phase
+
+### Do's
+- DO: Be specific about elements
+- DO: Mention colors, sizes, spacing
+- DO: Provide context (app type, audience)
+- DO: Iterate and refine
+
+## Troubleshooting
+
+### Result doesn't match expectations?
+1. Check if prompt was specific enough
+2. Add more constraints
+3. Try breaking into smaller steps
+4. Use reference images
+
+### Performance issues?
+1. Simplify the design first
+2. Work on sections separately
+3. Reduce number of elements
+
+## Output Quality Tips
+
+- Request specific dimensions
+- Mention accessibility needs
+- Specify interactive states
+- Include micro-copy examples
+</pre>
+                </div>
+              </div>
+              <div class="tool-section">
+                <div class="tool-tip">
+                  <span class="tool-tip-icon">💡</span>
+                  <span>טיפ: שלבו את שני ה-Skills יחד - Guidelines לתהליך העבודה ו-Prompter ליצירת הפרומפטים</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Best Practices -->
+      <h3 class="section-title" data-i18n="sectionBestPractices">✅ Best Practices ליצירת Skills</h3>
+      <div class="tips-grid">
+        <div class="tip-item">
+          <div class="tip-title" data-i18n="beConcise">Be Concise</div>
+          <div class="tip-text" data-i18n="beConciseDesc">שמרו על SKILL.md קצר (עד 500 שורות). הוסיפו רק מידע ש-Claude לא יודע</div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-title" data-i18n="clearDescription">Clear Description</div>
+          <div class="tip-text" data-i18n="clearDescriptionDesc">כתבו description שמסביר גם מה ה-Skill עושה וגם מתי להשתמש בו</div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-title" data-i18n="progressiveDisclosure">Progressive Disclosure</div>
+          <div class="tip-text" data-i18n="progressiveDisclosureDesc">שמרו פרטים מעמיקים בקבצים נפרדים והפנו אליהם מ-SKILL.md</div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-title" data-i18n="testIterate">Test & Iterate</div>
+          <div class="tip-text" data-i18n="testIterateDesc">בדקו את ה-Skill עם תרחישים אמיתיים ושפרו לפי התוצאות</div>
+        </div>
+      </div>
+
+      <!-- Call to Action -->
+      <div class="cursor-link-section" style="margin-top: 32px;">
+        <h3 data-i18n="wantToCreate">רוצים ליצור Skill משלכם?</h3>
+        <p data-i18n="wantToCreateDesc">התחילו עם התבנית הבסיסית ובנו Skills מותאמים לתהליכי העבודה שלכם</p>
+        <a href="https://code.claude.com/docs/en/skills" class="open-link-btn" target="_blank">
+          <span>📚</span>
+          <span data-i18n="fullDocs">דוקומנטציה מלאה</span>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p data-i18n="footer">AI Workshop 2026 • תודה שהשתתפתם!</p>
+    </footer>
+  </div>
+
+  <script>
+    function switchTab(tabId) {
+      // Remove active class from all buttons and contents
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+      // Add active class to clicked tab
+      event.target.closest('.tab-btn').classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    function toggleTool(element) {
+      // Close all other expanded items
+      document.querySelectorAll('.tool-item.expanded').forEach(item => {
+        if (item !== element) {
+          item.classList.remove('expanded');
+        }
+      });
+
+      // Toggle current item
+      element.classList.toggle('expanded');
+    }
+
+    // ===== Wavy Background Animation =====
+    // Simplex Noise implementation
+    const F3 = 1.0 / 3.0;
+    const G3 = 1.0 / 6.0;
+
+    function createNoise3D(random = Math.random) {
+      const perm = new Uint8Array(512);
+      const permMod12 = new Uint8Array(512);
+      const grad3 = new Float32Array([
+        1, 1, 0, -1, 1, 0, 1, -1, 0, -1, -1, 0,
+        1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, -1,
+        0, 1, 1, 0, -1, 1, 0, 1, -1, 0, -1, -1
+      ]);
+
+      const p = new Uint8Array(256);
+      for (let i = 0; i < 256; i++) p[i] = i;
+      for (let i = 255; i > 0; i--) {
+        const j = Math.floor(random() * (i + 1));
+        [p[i], p[j]] = [p[j], p[i]];
+      }
+      for (let i = 0; i < 512; i++) {
+        perm[i] = p[i & 255];
+        permMod12[i] = perm[i] % 12;
+      }
+
+      return function noise3D(x, y, z) {
+        let n0, n1, n2, n3;
+        const s = (x + y + z) * F3;
+        const i = Math.floor(x + s);
+        const j = Math.floor(y + s);
+        const k = Math.floor(z + s);
+        const t = (i + j + k) * G3;
+        const X0 = i - t;
+        const Y0 = j - t;
+        const Z0 = k - t;
+        const x0 = x - X0;
+        const y0 = y - Y0;
+        const z0 = z - Z0;
+
+        let i1, j1, k1, i2, j2, k2;
+        if (x0 >= y0) {
+          if (y0 >= z0) { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 1; k2 = 0; }
+          else if (x0 >= z0) { i1 = 1; j1 = 0; k1 = 0; i2 = 1; j2 = 0; k2 = 1; }
+          else { i1 = 0; j1 = 0; k1 = 1; i2 = 1; j2 = 0; k2 = 1; }
+        } else {
+          if (y0 < z0) { i1 = 0; j1 = 0; k1 = 1; i2 = 0; j2 = 1; k2 = 1; }
+          else if (x0 < z0) { i1 = 0; j1 = 1; k1 = 0; i2 = 0; j2 = 1; k2 = 1; }
+          else { i1 = 0; j1 = 1; k1 = 0; i2 = 1; j2 = 1; k2 = 0; }
+        }
+
+        const x1 = x0 - i1 + G3;
+        const y1 = y0 - j1 + G3;
+        const z1 = z0 - k1 + G3;
+        const x2 = x0 - i2 + 2.0 * G3;
+        const y2 = y0 - j2 + 2.0 * G3;
+        const z2 = z0 - k2 + 2.0 * G3;
+        const x3 = x0 - 1.0 + 3.0 * G3;
+        const y3 = y0 - 1.0 + 3.0 * G3;
+        const z3 = z0 - 1.0 + 3.0 * G3;
+
+        const ii = i & 255;
+        const jj = j & 255;
+        const kk = k & 255;
+
+        let t0 = 0.6 - x0 * x0 - y0 * y0 - z0 * z0;
+        if (t0 < 0) n0 = 0.0;
+        else {
+          const gi0 = permMod12[ii + perm[jj + perm[kk]]] * 3;
+          t0 *= t0;
+          n0 = t0 * t0 * (grad3[gi0] * x0 + grad3[gi0 + 1] * y0 + grad3[gi0 + 2] * z0);
+        }
+
+        let t1 = 0.6 - x1 * x1 - y1 * y1 - z1 * z1;
+        if (t1 < 0) n1 = 0.0;
+        else {
+          const gi1 = permMod12[ii + i1 + perm[jj + j1 + perm[kk + k1]]] * 3;
+          t1 *= t1;
+          n1 = t1 * t1 * (grad3[gi1] * x1 + grad3[gi1 + 1] * y1 + grad3[gi1 + 2] * z1);
+        }
+
+        let t2 = 0.6 - x2 * x2 - y2 * y2 - z2 * z2;
+        if (t2 < 0) n2 = 0.0;
+        else {
+          const gi2 = permMod12[ii + i2 + perm[jj + j2 + perm[kk + k2]]] * 3;
+          t2 *= t2;
+          n2 = t2 * t2 * (grad3[gi2] * x2 + grad3[gi2 + 1] * y2 + grad3[gi2 + 2] * z2);
+        }
+
+        let t3 = 0.6 - x3 * x3 - y3 * y3 - z3 * z3;
+        if (t3 < 0) n3 = 0.0;
+        else {
+          const gi3 = permMod12[ii + 1 + perm[jj + 1 + perm[kk + 1]]] * 3;
+          t3 *= t3;
+          n3 = t3 * t3 * (grad3[gi3] * x3 + grad3[gi3 + 1] * y3 + grad3[gi3 + 2] * z3);
+        }
+
+        return 32.0 * (n0 + n1 + n2 + n3);
+      };
+    }
+
+    // Wavy Background Class
+    class WavyBackground {
+      constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
+        this.noise = createNoise3D();
+        this.nt = 0;
+        this.animationId = null;
+
+        // Configuration
+        this.waveColors = ['#6366f1', '#8b5cf6', '#a855f7', '#c084fc', '#3b82f6'];
+        this.waveWidth = 50;
+        this.blur = 10;
+        this.speed = 0.001;
+        this.waveOpacity = 0.5;
+        this.backgroundFill = '#16161a';
+
+        this.init();
+      }
+
+      init() {
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+        this.render();
+      }
+
+      resize() {
+        const container = this.canvas.parentElement;
+        this.w = this.canvas.width = container.offsetWidth;
+        this.h = this.canvas.height = container.offsetHeight;
+        this.ctx.filter = `blur(${this.blur}px)`;
+      }
+
+      drawWave(n) {
+        this.nt += this.speed;
+        for (let i = 0; i < n; i++) {
+          this.ctx.beginPath();
+          this.ctx.lineWidth = this.waveWidth;
+          this.ctx.strokeStyle = this.waveColors[i % this.waveColors.length];
+          for (let x = 0; x < this.w; x += 5) {
+            const y = this.noise(x / 800, 0.3 * i, this.nt) * 100;
+            this.ctx.lineTo(x, y + this.h * 0.5);
+          }
+          this.ctx.stroke();
+          this.ctx.closePath();
+        }
+      }
+
+      render() {
+        this.ctx.fillStyle = this.backgroundFill;
+        this.ctx.globalAlpha = this.waveOpacity;
+        this.ctx.fillRect(0, 0, this.w, this.h);
+        this.drawWave(5);
+        this.animationId = requestAnimationFrame(() => this.render());
+      }
+
+      destroy() {
+        if (this.animationId) {
+          cancelAnimationFrame(this.animationId);
+        }
+      }
+    }
+
+    // Initialize wavy background
+    document.addEventListener('DOMContentLoaded', () => {
+      new WavyBackground('wavy-canvas');
+    });
+
+    // ===== Language System =====
+    const translations = {
+      he: {
+        // Header
+        headerTag: 'AI Workshop 2026',
+        headerTitle: 'סיכום סדנת AI לעיצוב',
+        headerSubtitle: 'כל החומרים, הכלים והטיפים מהסדנא - במקום אחד',
+
+        // Tabs
+        tabSummary: 'סיכום הסדנא',
+        tabDownload: 'הורדת מצגת',
+        tabCursor: 'הסבר על Cursor',
+        tabSkills: 'Claude Skills',
+
+        // Summary Tab - Intro
+        introTitle: 'שמירה על המומנטום',
+        introSubtitle: 'כל מה שצריך להמשיך הלאה',
+        introText: 'ריכזתי עבורכם את כל החומרים, הכלים, הטיפים ושלבי ההמשך. הקדשתי זמן לארוז את כל מה שעברנו יחד בצורה מסודרת, כדי שיהיה לכם כלי עבודה ברור ונגיש להמשך - ולא תצטרכו "לרדוף" אחרי הפרטים.',
+
+        // Section Titles
+        sectionResearch: '🔬 מחקר, יצירת GPTs ו-Gems',
+        sectionDesign: '🎨 עיצוב ופרוטוטייפינג',
+        sectionAnimation: '✨ אנימציות ואיורים',
+        sectionTips: '💡 טיפים לפרומפטינג - 3C\'s',
+        sectionSkillsWhat: '🎯 מה זה Skills?',
+        sectionSkillsOurs: '🎨 Skills שיצרנו בסדנא',
+        sectionBestPractices: '✅ Best Practices ליצירת Skills',
+
+        clickHint: 'לחצו על כל כלי לפרטים נוספים ↓',
+        clickHintSkills: 'לחצו לראות את ה-Skills שבנינו יחד ↓',
+
+        // Tools - Names stay the same (brand names)
+        // Tool descriptions
+        geminiCanvasDesc: 'מאפשר להפוך תוכן או נתונים לפורמטים שונים – אתר, אינפוגרפיקה, חידון או סיכום קולי.',
+        gemsDesc: 'מאפשרים ליצור כלים מותאמים אישית שמתחברים ישירות ל-Google Workspace.',
+        gptsDesc: 'נכנסים ל-Webview, בוחרים ב-GPTs ולוחצים "Create". אפשר להשתמש ב-Knowledge Base לאמן GPT על מידע ספציפי.',
+        skillsClaudeDesc: '"מדריכי עבודה" מותאמים אישית. במקום להסביר כל פעם מחדש, יוצרים skill שמלמד את התהליך המדויק.',
+        deepResearchDesc: 'זמין ב-ChatGPT ו-Gemini. ללמוד נושא חדש במהירות, להעלות מסמכים ולתת ל-AI לארגן ולחשוף תובנות.',
+        notebookLMDesc: 'עוזר חכם למחקר של Google – מעלים מסמכים ומקבלים סיכומים, תובנות וויזואליזציה של מידע.',
+        figjamDesc: 'כלי מצוין לסיעור מוחות ולסדנאות – יצירת מפת חשיבה או קיבוץ פתקים לפי נושאים.',
+        figmaAIDesc: 'יצירת לייאאוטים, תמונות וגרסאות עיצוב. שדרוג טקסטים וויזואלים. ניהול קבצים.',
+        figmaMakeDesc: 'בניית פרוטוטייפים אינטראקטיביים וריאליסטיים. לתכנן מראש, לשנות דבר אחד בכל פעם.',
+        cursorDesc: 'עורך קוד מבוסס AI שמאפשר למעצבים לבנות פרוטוטייפים אינטראקטיביים מהירים בלי לדעת לקוד.',
+        lottieDesc: 'פלטפורמה ליצירה ועריכת אנימציות לוטי בעזרת AI. תוסף: Motion Co-pilot.',
+        magicAnimatorDesc: 'פלאגין ליצירת אנימציות פשוטות ישירות מתוך Figma.',
+        vectorizerDesc: 'המרה של תמונות/איורים לקבצי וקטור נקיים.',
+
+        // Expanded sections
+        whatCanDo: 'מה אפשר לעשות',
+        useCases: 'Use Cases למעצבים',
+        tip: 'טיפ',
+        recommendedPlugin: 'תוסף מומלץ',
+
+        // 3Cs
+        clarity: 'Clarity',
+        clarityDesc: 'להיות ברור לגבי מה שרוצים - תארו בדיוק את התוצאה הרצויה',
+        context: 'Context',
+        contextDesc: 'לתת רקע ומידע רלוונטי - פלטפורמה, קהל יעד, סגנון',
+        constraints: 'Constraints',
+        constraintsDesc: 'להגדיר גבולות ומגבלות - גודל, צבעים, מה לא לעשות',
+
+        // Download Tab
+        downloadTitle: 'מצגת סיכום הסדנא',
+        downloadSubtitle: 'המצגת המלאה עם כל החומרים והדוגמאות מהסדנא',
+        downloadBtn: 'הורד מצגת PDF',
+
+        // Cursor Tab
+        cursorTitle: 'Cursor למעצבים',
+        cursorSubtitle: 'עורך קוד מבוסס AI לבניית פרוטוטייפים',
+        cursorIntro: 'Cursor מאפשר למעצבים לבנות פרוטוטייפים אינטראקטיביים מהירים בלי לדעת לקוד. במקום להסתמך על developer או ללמוד תכנות מאפס, אפשר לתאר מה רוצים ו-Cursor בונה את זה.',
+        whyGameChanger: 'למה זה משנה משחק למעצבים?',
+        whatWeLearnedTitle: 'מה עברנו בסדנא?',
+        useCasesDesigners: 'Use Cases למעצבים',
+        fullGuideTitle: 'המדריך המלא על Cursor',
+        fullGuideDesc: 'לחצו לפתיחת המדריך המפורט עם כל השלבים והטיפים',
+        openFullGuide: 'פתח את המדריך המלא',
+
+        // Skills Tab
+        skillsTitle: 'Claude Skills',
+        skillsSubtitle: 'הפכו את Claude למומחה בתחום שלכם',
+        skillsIntro: 'Skills הם יכולות מודולריות שמרחיבות את Claude. כל Skill מארז הוראות, מטא-דאטה ומשאבים (סקריפטים, תבניות) ש-Claude משתמש בהם אוטומטית כשמשימות רלוונטיות עולות. במקום להסביר לClaude כל פעם מחדש איך לעשות משהו - יוצרים פעם אחת Skill שמלמד אותו את התהליך המדויק.',
+        modularCapabilities: 'יכולות מודולריות',
+        modularCapabilitiesDesc: 'Skills מרחיבים את היכולות של Claude בצורה ממוקדת ומותאמת אישית',
+        fileStructure: 'מבנה הקבצים',
+        fileStructureDesc: 'Skill מורכב מקובץ SKILL.md ראשי ואופציונלית קבצים נוספים',
+        skillTemplate: 'תבנית SKILL.md',
+        skillTemplateDesc: 'המבנה הבסיסי של קובץ Skill עם YAML frontmatter והוראות',
+        howToInstall: 'איך מתקינים',
+        howToInstallDesc: 'התקנת Skills ב-Claude Code, Claude.ai ו-API',
+        figmaMakePrompter: 'Figma Make Prompter',
+        figmaMakePrompterDesc: 'Skill ליצירת פרומפטים מושלמים ל-Figma Make - מתרגם את הצרכים שלכם לפרומפטים אפקטיביים',
+        figmaMakeGuidelines: 'Figma Make Guidelines',
+        figmaMakeGuidelinesDesc: 'Skill עם הנחיות ו-best practices לעבודה יעילה עם Figma Make',
+        wantToCreate: 'רוצים ליצור Skill משלכם?',
+        wantToCreateDesc: 'התחילו עם התבנית הבסיסית ובנו Skills מותאמים לתהליכי העבודה שלכם',
+        fullDocs: 'דוקומנטציה מלאה',
+
+        // Best Practices
+        beConcise: 'Be Concise',
+        beConciseDesc: 'שמרו על SKILL.md קצר (עד 500 שורות). הוסיפו רק מידע ש-Claude לא יודע',
+        clearDescription: 'Clear Description',
+        clearDescriptionDesc: 'כתבו description שמסביר גם מה ה-Skill עושה וגם מתי להשתמש בו',
+        progressiveDisclosure: 'Progressive Disclosure',
+        progressiveDisclosureDesc: 'שמרו פרטים מעמיקים בקבצים נפרדים והפנו אליהם מ-SKILL.md',
+        testIterate: 'Test & Iterate',
+        testIterateDesc: 'בדקו את ה-Skill עם תרחישים אמיתיים ושפרו לפי התוצאות',
+
+        // Footer
+        footer: 'AI Workshop 2026 • תודה שהשתתפתם!'
+      },
+      en: {
+        // Header
+        headerTag: 'AI Workshop 2026',
+        headerTitle: 'AI Design Workshop Summary',
+        headerSubtitle: 'All materials, tools and tips from the workshop - in one place',
+
+        // Tabs
+        tabSummary: 'Workshop Summary',
+        tabDownload: 'Download Presentation',
+        tabCursor: 'About Cursor',
+        tabSkills: 'Claude Skills',
+
+        // Summary Tab - Intro
+        introTitle: 'Keep the Momentum',
+        introSubtitle: 'Everything you need to continue',
+        introText: 'I\'ve gathered all the materials, tools, tips and next steps for you. I took the time to organize everything we covered together in a clear and accessible format - so you don\'t have to chase after the details.',
+
+        // Section Titles
+        sectionResearch: '🔬 Research, GPTs & Gems',
+        sectionDesign: '🎨 Design & Prototyping',
+        sectionAnimation: '✨ Animations & Illustrations',
+        sectionTips: '💡 Prompting Tips - 3C\'s',
+        sectionSkillsWhat: '🎯 What are Skills?',
+        sectionSkillsOurs: '🎨 Skills we created in the workshop',
+        sectionBestPractices: '✅ Best Practices for Creating Skills',
+
+        clickHint: 'Click on any tool for more details ↓',
+        clickHintSkills: 'Click to see the Skills we built together ↓',
+
+        // Tool descriptions
+        geminiCanvasDesc: 'Transform content or data into different formats – websites, infographics, quizzes, or audio summaries.',
+        gemsDesc: 'Create custom tools that connect directly to Google Workspace (Docs, Sheets, Slides).',
+        gptsDesc: 'Go to Webview, select GPTs and click "Create". Use Knowledge Base to train GPT on specific information.',
+        skillsClaudeDesc: 'Custom "work guides". Instead of explaining each time, create a skill that teaches the exact process.',
+        deepResearchDesc: 'Available in ChatGPT and Gemini. Learn new topics quickly, upload documents and let AI organize insights.',
+        notebookLMDesc: 'Google\'s smart research assistant – upload documents and get summaries, insights and data visualization.',
+        figjamDesc: 'Great tool for brainstorming and workshops – create mind maps or group notes by topics.',
+        figmaAIDesc: 'Create layouts, images and design versions. Enhance text and visuals. File management.',
+        figmaMakeDesc: 'Build interactive and realistic prototypes. Plan ahead, change one thing at a time.',
+        cursorDesc: 'AI-powered code editor that lets designers build interactive prototypes quickly without coding.',
+        lottieDesc: 'Platform for creating and editing Lottie animations with AI. Plugin: Motion Co-pilot.',
+        magicAnimatorDesc: 'Plugin for creating simple animations directly from Figma.',
+        vectorizerDesc: 'Convert images/illustrations to clean vector files.',
+
+        // Expanded sections
+        whatCanDo: 'What you can do',
+        useCases: 'Use Cases for Designers',
+        tip: 'Tip',
+        recommendedPlugin: 'Recommended Plugin',
+
+        // 3Cs
+        clarity: 'Clarity',
+        clarityDesc: 'Be clear about what you want - describe exactly the desired result',
+        context: 'Context',
+        contextDesc: 'Provide relevant background - platform, target audience, style',
+        constraints: 'Constraints',
+        constraintsDesc: 'Define boundaries and limitations - size, colors, what not to do',
+
+        // Download Tab
+        downloadTitle: 'Workshop Summary Presentation',
+        downloadSubtitle: 'The complete presentation with all materials and examples from the workshop',
+        downloadBtn: 'Download PDF Presentation',
+
+        // Cursor Tab
+        cursorTitle: 'Cursor for Designers',
+        cursorSubtitle: 'AI-powered code editor for building prototypes',
+        cursorIntro: 'Cursor allows designers to build interactive prototypes quickly without knowing how to code. Instead of relying on a developer or learning programming from scratch, you can describe what you want and Cursor builds it.',
+        whyGameChanger: 'Why is this a game changer for designers?',
+        whatWeLearnedTitle: 'What we covered in the workshop?',
+        useCasesDesigners: 'Use Cases for Designers',
+        fullGuideTitle: 'The Complete Cursor Guide',
+        fullGuideDesc: 'Click to open the detailed guide with all steps and tips',
+        openFullGuide: 'Open Full Guide',
+
+        // Skills Tab
+        skillsTitle: 'Claude Skills',
+        skillsSubtitle: 'Turn Claude into an expert in your field',
+        skillsIntro: 'Skills are modular capabilities that extend Claude. Each Skill packages instructions, metadata and resources (scripts, templates) that Claude uses automatically when relevant tasks arise. Instead of explaining to Claude each time how to do something - create a Skill once that teaches the exact process.',
+        modularCapabilities: 'Modular Capabilities',
+        modularCapabilitiesDesc: 'Skills extend Claude\'s capabilities in a focused and customized way',
+        fileStructure: 'File Structure',
+        fileStructureDesc: 'A Skill consists of a main SKILL.md file and optionally additional files',
+        skillTemplate: 'SKILL.md Template',
+        skillTemplateDesc: 'The basic structure of a Skill file with YAML frontmatter and instructions',
+        howToInstall: 'How to Install',
+        howToInstallDesc: 'Installing Skills in Claude Code, Claude.ai and API',
+        figmaMakePrompter: 'Figma Make Prompter',
+        figmaMakePrompterDesc: 'A Skill for creating perfect Figma Make prompts - translates your needs into effective prompts',
+        figmaMakeGuidelines: 'Figma Make Guidelines',
+        figmaMakeGuidelinesDesc: 'A Skill with guidelines and best practices for working effectively with Figma Make',
+        wantToCreate: 'Want to create your own Skill?',
+        wantToCreateDesc: 'Start with the basic template and build Skills customized to your workflow',
+        fullDocs: 'Full Documentation',
+
+        // Best Practices
+        beConcise: 'Be Concise',
+        beConciseDesc: 'Keep SKILL.md short (up to 500 lines). Only add info Claude doesn\'t know',
+        clearDescription: 'Clear Description',
+        clearDescriptionDesc: 'Write a description that explains both what the Skill does and when to use it',
+        progressiveDisclosure: 'Progressive Disclosure',
+        progressiveDisclosureDesc: 'Keep detailed info in separate files and reference them from SKILL.md',
+        testIterate: 'Test & Iterate',
+        testIterateDesc: 'Test the Skill with real scenarios and improve based on results',
+
+        // Footer
+        footer: 'AI Workshop 2026 • Thank you for participating!'
+      }
+    };
+
+    let currentLang = 'he';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      const html = document.documentElement;
+
+      // Update direction
+      html.dir = lang === 'he' ? 'rtl' : 'ltr';
+      html.lang = lang;
+
+      // Update buttons
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+
+      // Update all translated elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (translations[lang][key]) {
+          el.textContent = translations[lang][key];
+        }
+      });
+
+      // Update page title
+      document.title = lang === 'he' ? 'סיכום סדנת AI לעיצוב' : 'AI Design Workshop Summary';
+
+      // Save preference
+      localStorage.setItem('preferredLang', lang);
+    }
+
+    // Initialize language from localStorage or default to Hebrew
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedLang = localStorage.getItem('preferredLang') || 'he';
+      if (savedLang !== 'he') {
+        setLanguage(savedLang);
+      }
+    });
+  </script>
+</body>
+</html>

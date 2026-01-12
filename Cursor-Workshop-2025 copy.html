@@ -1,0 +1,3569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cursor for Designers — Workshop 2025</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0f0f12;
+      --bg-secondary: #16161a;
+      --bg-card: #1c1c22;
+      --bg-card-hover: #242430;
+      --accent-primary: #6366f1;
+      --accent-secondary: #8b5cf6;
+      --accent-success: #10b981;
+      --accent-warning: #f59e0b;
+      --accent-error: #ef4444;
+      --accent-info: #3b82f6;
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border: #27272a;
+      --border-light: #3f3f46;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow: hidden;
+      height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .presentation {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 60px 80px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(60px);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      background: var(--bg-primary);
+      overflow-y: auto;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    .slide.prev {
+      transform: translateX(-60px);
+    }
+
+    /* Subtle background */
+    .bg-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Typography */
+    .slide-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent-primary);
+      margin-bottom: 16px;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeInUp 0.5s 0.1s forwards;
+    }
+
+    .slide-title {
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeInUp 0.5s 0.2s forwards;
+    }
+
+    .slide-subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      font-weight: 400;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeInUp 0.5s 0.3s forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Layout */
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      flex: 1;
+      opacity: 0;
+      animation: fadeInUp 0.5s 0.4s forwards;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      flex: 1;
+      opacity: 0;
+      animation: fadeInUp 0.5s 0.4s forwards;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .four-col {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .content-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: var(--border-light);
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .card-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .card-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+
+    /* Accent cards */
+    .card-accent {
+      border-left: 3px solid var(--accent-primary);
+    }
+    .card-accent.success { border-left-color: var(--accent-success); }
+    .card-accent.warning { border-left-color: var(--accent-warning); }
+    .card-accent.error { border-left-color: var(--accent-error); }
+    .card-accent.info { border-left-color: var(--accent-info); }
+
+    /* Code Blocks */
+    .code-block {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+
+    .code-line {
+      display: block;
+      line-height: 1.8;
+    }
+
+    .code-comment { color: var(--text-muted); }
+    .code-keyword { color: var(--accent-primary); }
+    .code-string { color: var(--accent-success); }
+    .code-value { color: var(--text-secondary); }
+
+    /* Tags */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--accent-primary);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+
+    .tag.success { background: rgba(16, 185, 129, 0.1); color: var(--accent-success); border-color: rgba(16, 185, 129, 0.2); }
+    .tag.warning { background: rgba(245, 158, 11, 0.1); color: var(--accent-warning); border-color: rgba(245, 158, 11, 0.2); }
+    .tag.error { background: rgba(239, 68, 68, 0.1); color: var(--accent-error); border-color: rgba(239, 68, 68, 0.2); }
+    .tag.info { background: rgba(59, 130, 246, 0.1); color: var(--accent-info); border-color: rgba(59, 130, 246, 0.2); }
+    .tag.secondary { background: rgba(139, 92, 246, 0.1); color: var(--accent-secondary); border-color: rgba(139, 92, 246, 0.2); }
+
+    /* Feature List */
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .feature-list .icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .feature-list .icon.check { background: rgba(16, 185, 129, 0.15); color: var(--accent-success); }
+    .feature-list .icon.x { background: rgba(239, 68, 68, 0.15); color: var(--accent-error); }
+    .feature-list .icon.arrow { background: rgba(99, 102, 241, 0.15); color: var(--accent-primary); }
+
+    /* Mode Cards */
+    .mode-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      flex: 1;
+      transition: all 0.2s ease;
+    }
+
+    .mode-card:hover {
+      border-color: var(--border-light);
+    }
+
+    .mode-card.ask { border-top: 3px solid var(--accent-info); }
+    .mode-card.agent { border-top: 3px solid var(--accent-success); }
+    .mode-card.plan { border-top: 3px solid var(--accent-secondary); }
+
+    .mode-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .mode-card.ask .mode-icon { background: rgba(59, 130, 246, 0.1); }
+    .mode-card.agent .mode-icon { background: rgba(16, 185, 129, 0.1); }
+    .mode-card.plan .mode-icon { background: rgba(139, 92, 246, 0.1); }
+
+    .mode-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .mode-card.ask .mode-title { color: var(--accent-info); }
+    .mode-card.agent .mode-title { color: var(--accent-success); }
+    .mode-card.plan .mode-title { color: var(--accent-secondary); }
+
+    .mode-desc {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .mode-example {
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+      border: 1px solid var(--border);
+    }
+
+    /* Steps */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .step-item:hover {
+      border-color: var(--border-light);
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--accent-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 14px;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .step-content h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .step-content p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Comparison */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .comparison-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 28px;
+      border: 1px solid var(--border);
+    }
+
+    .comparison-card.before { border-top: 3px solid var(--accent-error); }
+    .comparison-card.after { border-top: 3px solid var(--accent-success); }
+
+    .comparison-header {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+
+    .comparison-card.before .comparison-header { color: var(--accent-error); }
+    .comparison-card.after .comparison-header { color: var(--accent-success); }
+
+    .comparison-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 20px;
+      z-index: 100;
+    }
+
+    .nav-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: none;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.2s ease;
+      border: 1px solid var(--border);
+    }
+
+    .nav-btn:hover {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .nav-progress {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--text-muted);
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: var(--accent-primary);
+      transition: width 0.3s ease;
+      z-index: 100;
+    }
+
+    .keyboard-hint {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .key {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+    }
+
+    /* Title Slide */
+    .title-slide {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .title-slide .slide-title {
+      font-size: clamp(42px, 5.5vw, 64px);
+      margin-bottom: 16px;
+    }
+
+    .title-slide .slide-subtitle {
+      font-size: 20px;
+      margin-bottom: 32px;
+      max-width: 500px;
+    }
+
+    /* Section Slide */
+    .section-slide {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .section-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-divider {
+      width: 64px;
+      height: 3px;
+      background: var(--accent-primary);
+      border-radius: 2px;
+      margin: 20px auto;
+    }
+
+    .section-subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+    }
+
+    /* Keyboard shortcuts */
+    .shortcut-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .shortcut-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .shortcut-keys {
+      display: flex;
+      gap: 4px;
+    }
+
+    .shortcut-key {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-primary);
+    }
+
+    .shortcut-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Chat example */
+    .chat-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .chat-message {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .chat-message:last-child {
+      margin-bottom: 0;
+    }
+
+    .chat-message.user {
+      flex-direction: row-reverse;
+    }
+
+    .chat-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .chat-message.user .chat-avatar { background: var(--accent-primary); }
+    .chat-message.ai .chat-avatar { background: var(--accent-secondary); }
+
+    .chat-bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .chat-message.user .chat-bubble {
+      background: var(--accent-primary);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-message.ai .chat-bubble {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+    }
+
+    /* Prompt tips */
+    .prompt-example {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .prompt-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .prompt-label.bad { color: var(--accent-error); }
+    .prompt-label.good { color: var(--accent-success); }
+
+    .prompt-text {
+      font-size: 15px;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    /* Highlight box */
+    .highlight-box {
+      background: rgba(99, 102, 241, 0.05);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .highlight-box .big-text {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .highlight-box .sub-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* Tip box */
+    .tip-box {
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .tip-box .icon {
+      font-size: 18px;
+    }
+
+    .tip-box .text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .tip-box .text strong {
+      color: var(--accent-success);
+    }
+
+    /* Warning box */
+    .warning-box {
+      background: rgba(245, 158, 11, 0.05);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .warning-box .icon {
+      font-size: 18px;
+    }
+
+    .warning-box .text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .warning-box .text strong {
+      color: var(--accent-warning);
+    }
+
+    /* Git timeline */
+    .git-visual {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow-x: auto;
+    }
+
+    .git-commit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      min-width: 100px;
+    }
+
+    .git-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent-primary);
+      position: relative;
+    }
+
+    .git-dot::after {
+      content: '';
+      position: absolute;
+      right: -52px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 2px;
+      background: var(--border-light);
+    }
+
+    .git-commit:last-child .git-dot::after {
+      display: none;
+    }
+
+    .git-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* Resources */
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .resource-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .resource-card h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .resource-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .resource-item:last-child { border-bottom: none; }
+
+    .resource-name {
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .resource-link {
+      font-size: 12px;
+      color: var(--accent-primary);
+    }
+
+    /* Practice slide */
+    .practice-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+    }
+
+    .practice-card .emoji {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .practice-card h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .practice-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* CTA */
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-primary);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .cta-btn:hover {
+      background: var(--accent-secondary);
+    }
+
+    /* Interface preview */
+    .interface-preview {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .interface-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .interface-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .interface-body {
+      display: flex;
+      height: 240px;
+    }
+
+    .interface-sidebar {
+      width: 200px;
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+      padding: 12px;
+    }
+
+    .interface-main {
+      flex: 1;
+      padding: 16px;
+    }
+
+    .interface-chat {
+      width: 280px;
+      background: var(--bg-card);
+      border-left: 1px solid var(--border);
+      padding: 12px;
+    }
+
+    .interface-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .interface-file {
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .interface-file.active {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--accent-primary);
+    }
+
+    /* Agent visualization */
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .agent-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .agent-card .emoji {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .agent-card .name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .agent-card .status {
+      font-size: 11px;
+      color: var(--accent-success);
+    }
+
+    /* Mistakes grid */
+    .mistakes-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .mistake-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      border-left: 3px solid var(--accent-error);
+    }
+
+    .mistake-card h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mistake-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .mistake-card .fix {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      color: var(--accent-success);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-pattern"></div>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <div class="presentation" id="presentation">
+
+    <!-- Slide 1: Main Menu -->
+    <div class="slide title-slide active" data-slide="1">
+      <span class="slide-tag">Workshop 2025</span>
+      <h1 class="slide-title">Choose Your Topic</h1>
+      <p class="slide-subtitle">Select a workshop to begin</p>
+
+      <div style="display: flex; gap: 32px; justify-content: center; margin-top: 40px;">
+        <div class="mode-card ask" style="cursor: pointer; max-width: 350px; transition: transform 0.2s, box-shadow 0.2s;" onclick="goToSlide(2)" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+          <div class="mode-icon">🎨</div>
+          <div class="mode-title">Cursor for Designers</div>
+          <p class="mode-desc">Build real products with AI — no coding experience required. Learn Git, AI modes, prompts, and more.</p>
+          <div style="margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="tag info" style="font-size: 11px;">35 Slides</span>
+            <span class="tag" style="font-size: 11px;">Beginner Friendly</span>
+          </div>
+        </div>
+
+        <div class="mode-card agent" style="cursor: pointer; max-width: 350px; transition: transform 0.2s, box-shadow 0.2s;" onclick="goToSlide(37)" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+          <div class="mode-icon">🤖</div>
+          <div class="mode-title">Claude Code Sub-Agents</div>
+          <p class="mode-desc">Specialized AI assistants for complex tasks. Learn to create, configure, and use custom sub-agents.</p>
+          <div style="margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="tag success" style="font-size: 11px;">11 Slides</span>
+            <span class="tag secondary" style="font-size: 11px;">Advanced</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 48px; color: var(--text-muted); font-size: 14px;">
+        Click a card to start, or use arrow keys to browse all slides
+      </div>
+    </div>
+
+    <!-- Slide 2: Agenda -->
+    <div class="slide" data-slide="2">
+      <span class="slide-tag">Overview</span>
+      <h1 class="slide-title">What We'll Cover Today</h1>
+      <p class="slide-subtitle">From zero to building your first project</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Getting Started</h4>
+                <p>What is Cursor, installation, and interface tour</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Git Basics</h4>
+                <p>Clone projects, save your work, collaborate</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Working with AI</h4>
+                <p>The three modes: Ask, Agent, and Plan</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="content-col">
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <h4>Writing Great Prompts</h4>
+                <p>How to communicate effectively with AI</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">5</div>
+              <div class="step-content">
+                <h4>Advanced Features</h4>
+                <p>Rules, Visual Editor, and integrations</p>
+              </div>
+            </div>
+            <div class="step-item" style="background: rgba(99, 102, 241, 0.05); border-color: var(--accent-primary);">
+              <div class="step-number" style="background: var(--accent-success);">→</div>
+              <div class="step-content">
+                <h4>Hands-on Practice</h4>
+                <p>Build a real project from GitHub</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3: Why Cursor -->
+    <div class="slide" data-slide="3">
+      <span class="slide-tag">The Problem</span>
+      <h1 class="slide-title">Why Should Designers Learn Cursor?</h1>
+      <p class="slide-subtitle">Close the gap between design and development</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-card before">
+          <div class="comparison-header">WITHOUT CURSOR</div>
+          <div class="comparison-title">The Old Way</div>
+          <ul class="feature-list">
+            <li><span class="icon x">✕</span> Wait days for developer availability</li>
+            <li><span class="icon x">✕</span> Create static mockups only</li>
+            <li><span class="icon x">✕</span> "Can you make it more... you know..."</li>
+            <li><span class="icon x">✕</span> Design intent lost in translation</li>
+            <li><span class="icon x">✕</span> Long feedback loops</li>
+          </ul>
+        </div>
+
+        <div class="comparison-card after">
+          <div class="comparison-header">WITH CURSOR</div>
+          <div class="comparison-title">The New Way</div>
+          <ul class="feature-list">
+            <li><span class="icon check">✓</span> Build it yourself, right now</li>
+            <li><span class="icon check">✓</span> Create working prototypes</li>
+            <li><span class="icon check">✓</span> Show exactly what you mean</li>
+            <li><span class="icon check">✓</span> Real interactions, real data</li>
+            <li><span class="icon check">✓</span> Iterate in minutes, not days</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 4: What is Cursor -->
+    <div class="slide" data-slide="4">
+      <span class="slide-tag">Introduction</span>
+      <h1 class="slide-title">What is Cursor?</h1>
+      <p class="slide-subtitle">A code editor with AI built into every feature</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card">
+            <p class="card-text" style="font-size: 16px; line-height: 1.7; color: var(--text-primary);">
+              Think of Cursor as having a senior developer sitting next to you 24/7. You describe what you want in plain English, and the AI writes the code for you.
+            </p>
+          </div>
+
+          <div class="three-col" style="gap: 16px;">
+            <div class="card" style="text-align: center; padding: 20px;">
+              <div style="font-size: 32px; font-weight: 700; color: var(--accent-primary);">Free</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Tier available</div>
+            </div>
+            <div class="card" style="text-align: center; padding: 20px;">
+              <div style="font-size: 32px; font-weight: 700; color: var(--accent-primary);">VS Code</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Based on</div>
+            </div>
+            <div class="card" style="text-align: center; padding: 20px;">
+              <div style="font-size: 32px; font-weight: 700; color: var(--accent-primary);">Mac/Win</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Available on</div>
+            </div>
+          </div>
+
+          <div class="tip-box">
+            <span class="icon">💡</span>
+            <span class="text"><strong>Pro tip:</strong> If you've used VS Code before, Cursor will feel familiar. All your extensions work here too!</span>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card">
+            <div class="card-icon">💬</div>
+            <div class="card-title">Chat with AI</div>
+            <p class="card-text">Ask questions about your code or ask AI to write code for you in natural language.</p>
+          </div>
+          <div class="card">
+            <div class="card-icon">🧠</div>
+            <div class="card-title">Understands Your Project</div>
+            <p class="card-text">AI sees all your files and understands how they connect. No need to explain context.</p>
+          </div>
+          <div class="card">
+            <div class="card-icon">✨</div>
+            <div class="card-title">Autocomplete on Steroids</div>
+            <p class="card-text">Predicts what you want to type and suggests complete blocks of code.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 5: Installation -->
+    <div class="slide" data-slide="5">
+      <span class="slide-tag">Setup</span>
+      <h1 class="slide-title">Installing Cursor</h1>
+      <p class="slide-subtitle">Get up and running in 2 minutes</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Download Cursor</h4>
+                <p>Go to <strong style="color: var(--accent-primary);">cursor.com</strong> and download for your OS</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Create an Account</h4>
+                <p>Sign up with Google, GitHub, or email</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Choose Your Plan</h4>
+                <p>Start with Free (2000 completions/month)</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <h4>Import VS Code Settings</h4>
+                <p>Optional: bring your existing setup</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-number">PRICING</div>
+            <div style="margin-top: 12px;">
+              <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span style="font-weight: 500;">Free</span>
+                <span style="color: var(--text-muted);">2000 completions/month</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span style="font-weight: 500;">Pro — $20/mo</span>
+                <span style="color: var(--text-muted);">Unlimited + fast models</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 12px 0;">
+                <span style="font-weight: 500;">Business — $40/mo</span>
+                <span style="color: var(--text-muted);">Team features + admin</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="warning-box">
+            <span class="icon">⚠️</span>
+            <span class="text"><strong>Note:</strong> Free tier is generous for learning. Upgrade only when you need more speed or features.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6: Interface Tour -->
+    <div class="slide" data-slide="6">
+      <span class="slide-tag">Interface</span>
+      <h1 class="slide-title">The Cursor Interface</h1>
+      <p class="slide-subtitle">Know where everything is</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="interface-preview">
+            <div class="interface-header">
+              <div class="interface-dot" style="background: #ff5f57;"></div>
+              <div class="interface-dot" style="background: #febc2e;"></div>
+              <div class="interface-dot" style="background: #28c840;"></div>
+            </div>
+            <div class="interface-body">
+              <div class="interface-sidebar">
+                <div class="interface-label">Files</div>
+                <div class="interface-file">📁 src</div>
+                <div class="interface-file active">  └ App.tsx</div>
+                <div class="interface-file">  └ styles.css</div>
+                <div class="interface-file">📁 public</div>
+              </div>
+              <div class="interface-main">
+                <div class="interface-label">Editor</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); line-height: 1.8;">
+                  <div><span style="color: var(--accent-primary);">function</span> App() {</div>
+                  <div>  <span style="color: var(--accent-primary);">return</span> (</div>
+                  <div>    &lt;div&gt;Hello&lt;/div&gt;</div>
+                  <div>  )</div>
+                  <div>}</div>
+                </div>
+              </div>
+              <div class="interface-chat">
+                <div class="interface-label">AI Chat</div>
+                <div style="font-size: 11px; color: var(--text-muted); padding: 8px; background: var(--bg-secondary); border-radius: 6px;">
+                  Ask me anything...
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card card-accent">
+            <div class="card-title">File Explorer (Left)</div>
+            <p class="card-text">Browse and manage your project files. Right-click for options.</p>
+          </div>
+          <div class="card card-accent" style="border-left-color: var(--accent-success);">
+            <div class="card-title">Editor (Center)</div>
+            <p class="card-text">Where you view and edit code. Multiple tabs for different files.</p>
+          </div>
+          <div class="card card-accent" style="border-left-color: var(--accent-secondary);">
+            <div class="card-title">AI Chat (Right)</div>
+            <p class="card-text">Your AI assistant. Ask questions, request changes, get explanations.</p>
+          </div>
+          <div class="card card-accent" style="border-left-color: var(--accent-warning);">
+            <div class="card-title">Terminal (Bottom)</div>
+            <p class="card-text">Run commands like npm install or git push. Opens with Ctrl+`</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 7: Keyboard Shortcuts -->
+    <div class="slide" data-slide="7">
+      <span class="slide-tag">Shortcuts</span>
+      <h1 class="slide-title">Essential Keyboard Shortcuts</h1>
+      <p class="slide-subtitle">Work faster with these key combinations</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card-number">AI COMMANDS</div>
+          <div class="shortcut-grid" style="margin-bottom: 24px;">
+            <div class="shortcut-item">
+              <div class="shortcut-keys">
+                <span class="shortcut-key">⌘</span>
+                <span class="shortcut-key">L</span>
+              </div>
+              <span class="shortcut-desc">Open AI chat</span>
+            </div>
+            <div class="shortcut-item">
+              <div class="shortcut-keys">
+                <span class="shortcut-key">⌘</span>
+                <span class="shortcut-key">K</span>
+              </div>
+              <span class="shortcut-desc">Inline AI edit</span>
+            </div>
+            <div class="shortcut-item">
+              <div class="shortcut-keys">
+                <span class="shortcut-key">⌘</span>
+                <span class="shortcut-key">I</span>
+              </div>
+              <span class="shortcut-desc">Composer (multi-file)</span>
+            </div>
+            <div class="shortcut-item">
+              <div class="shortcut-keys">
+                <span class="shortcut-key">⌘</span>
+                <span class="shortcut-key">⇧</span>
+                <span class="shortcut-key">L</span>
+              </div>
+              <span class="shortcut-desc">Add selection to chat</span>
+            </div>
+            <div class="shortcut-item">
+              <div class="shortcut-keys">
+                <span class="shortcut-key">Tab</span>
+              </div>
+              <span class="shortcut-desc">Accept suggestion</span>
+            </div>
+            <div class="shortcut-item">
+              <div class="shortcut-keys">
+                <span class="shortcut-key">Esc</span>
+              </div>
+              <span class="shortcut-desc">Reject suggestion</span>
+            </div>
+          </div>
+
+          <div class="card-number">GENERAL</div>
+          <div class="shortcut-grid">
+            <div class="shortcut-item">
+              <div class="shortcut-keys">
+                <span class="shortcut-key">⌘</span>
+                <span class="shortcut-key">P</span>
+              </div>
+              <span class="shortcut-desc">Quick open file</span>
+            </div>
+            <div class="shortcut-item">
+              <div class="shortcut-keys">
+                <span class="shortcut-key">⌘</span>
+                <span class="shortcut-key">⇧</span>
+                <span class="shortcut-key">P</span>
+              </div>
+              <span class="shortcut-desc">Command palette</span>
+            </div>
+            <div class="shortcut-item">
+              <div class="shortcut-keys">
+                <span class="shortcut-key">⌘</span>
+                <span class="shortcut-key">S</span>
+              </div>
+              <span class="shortcut-desc">Save file</span>
+            </div>
+            <div class="shortcut-item">
+              <div class="shortcut-keys">
+                <span class="shortcut-key">⌘</span>
+                <span class="shortcut-key">`</span>
+              </div>
+              <span class="shortcut-desc">Toggle terminal</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="highlight-box" style="margin-bottom: 20px;">
+            <div class="big-text">⌘ + L</div>
+            <div class="sub-text">This is your most used shortcut — opens AI chat</div>
+          </div>
+
+          <div class="tip-box">
+            <span class="icon">💡</span>
+            <span class="text"><strong>Windows users:</strong> Replace ⌘ (Command) with Ctrl</span>
+          </div>
+
+          <div class="card" style="margin-top: 16px;">
+            <div class="card-title">@ References</div>
+            <p class="card-text" style="margin-bottom: 12px;">In AI chat, use @ to reference specific files or code:</p>
+            <div class="code-block">
+              <span class="code-line"><span class="code-keyword">@filename</span> — reference a file</span>
+              <span class="code-line"><span class="code-keyword">@folder</span> — reference a folder</span>
+              <span class="code-line"><span class="code-keyword">@codebase</span> — search entire project</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 8: Section - Git -->
+    <div class="slide section-slide" data-slide="8">
+      <div class="section-number">PART 02</div>
+      <h2 class="section-title">Git Basics</h2>
+      <div class="section-divider"></div>
+      <p class="section-subtitle">Save your work and collaborate with others</p>
+    </div>
+
+    <!-- Slide 9: What is Git -->
+    <div class="slide" data-slide="9">
+      <span class="slide-tag">Version Control</span>
+      <h1 class="slide-title">What is Git?</h1>
+      <p class="slide-subtitle">Think of it as "Save Points" for your code</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card">
+            <p class="card-text" style="font-size: 16px; line-height: 1.7; color: var(--text-primary);">
+              Git tracks every change you make. If something breaks, you can always go back to a working version. It's like having unlimited undo history across your entire project.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Key Concepts</div>
+            <ul class="feature-list" style="margin-top: 12px;">
+              <li><span class="icon arrow">→</span> <strong>Repository (Repo)</strong> — Your project folder tracked by Git</li>
+              <li><span class="icon arrow">→</span> <strong>Commit</strong> — A save point with a description</li>
+              <li><span class="icon arrow">→</span> <strong>Branch</strong> — A parallel version of your project</li>
+              <li><span class="icon arrow">→</span> <strong>Push/Pull</strong> — Send/receive changes from the cloud</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-number">YOUR PROJECT TIMELINE</div>
+            <div class="git-visual" style="margin-top: 16px; justify-content: center;">
+              <div class="git-commit">
+                <div class="git-dot" style="background: var(--accent-secondary);"></div>
+                <div class="git-label">Initial<br>setup</div>
+              </div>
+              <div class="git-commit">
+                <div class="git-dot"></div>
+                <div class="git-label">Added<br>navbar</div>
+              </div>
+              <div class="git-commit">
+                <div class="git-dot"></div>
+                <div class="git-label">Fixed<br>button</div>
+              </div>
+              <div class="git-commit">
+                <div class="git-dot" style="background: var(--accent-success);"></div>
+                <div class="git-label">Current<br>version</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tip-box">
+            <span class="icon">💡</span>
+            <span class="text"><strong>Good news:</strong> Cursor has Git built-in. You'll see changes highlighted and can commit with a few clicks.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 10: Clone a Project -->
+    <div class="slide" data-slide="10">
+      <span class="slide-tag">Getting Code</span>
+      <h1 class="slide-title">Clone a Project from GitHub</h1>
+      <p class="slide-subtitle">Download an existing project to work on</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Find the Repository URL</h4>
+                <p>On GitHub, click the green "Code" button and copy the URL</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Open Cursor</h4>
+                <p>Go to File → Clone Repository (or use the welcome screen)</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Paste the URL</h4>
+                <p>Choose where to save it on your computer</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <h4>Open the Folder</h4>
+                <p>Cursor will download and open the project</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-number">TERMINAL ALTERNATIVE</div>
+            <p class="card-text" style="margin-bottom: 16px;">You can also clone via terminal:</p>
+            <div class="code-block">
+              <span class="code-line"><span class="code-comment"># Open terminal with ⌘ + `</span></span>
+              <span class="code-line"></span>
+              <span class="code-line"><span class="code-keyword">git clone</span> https://github.com/user/repo.git</span>
+              <span class="code-line"></span>
+              <span class="code-line"><span class="code-comment"># Then open the folder in Cursor</span></span>
+            </div>
+          </div>
+
+          <div class="warning-box">
+            <span class="icon">⚠️</span>
+            <span class="text"><strong>First time?</strong> GitHub might ask you to login. Use "Sign in with browser" for the easiest setup.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 11: Making Commits -->
+    <div class="slide" data-slide="11">
+      <span class="slide-tag">Saving Work</span>
+      <h1 class="slide-title">Making Commits</h1>
+      <p class="slide-subtitle">Save your progress with meaningful messages</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">How to Commit in Cursor</div>
+            <ul class="feature-list" style="margin-top: 12px;">
+              <li><span class="icon arrow">1</span> Make your changes to files</li>
+              <li><span class="icon arrow">2</span> Click the Source Control icon (branch) in sidebar</li>
+              <li><span class="icon arrow">3</span> Review changed files (+ to stage)</li>
+              <li><span class="icon arrow">4</span> Write a commit message</li>
+              <li><span class="icon arrow">5</span> Click "Commit" button</li>
+            </ul>
+          </div>
+
+          <div class="tip-box">
+            <span class="icon">✨</span>
+            <span class="text"><strong>AI can help!</strong> Click the sparkle icon to let AI write your commit message based on your changes.</span>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">Good Commit Messages</div>
+            <div style="margin-top: 16px;">
+              <div class="prompt-example" style="margin-bottom: 12px; border-left: 3px solid var(--accent-success); padding: 14px;">
+                <div class="prompt-label good">✓ GOOD</div>
+                <div class="prompt-text">"Add responsive navbar with mobile menu"</div>
+              </div>
+              <div class="prompt-example" style="margin-bottom: 12px; border-left: 3px solid var(--accent-success); padding: 14px;">
+                <div class="prompt-label good">✓ GOOD</div>
+                <div class="prompt-text">"Fix login button not working on Safari"</div>
+              </div>
+              <div class="prompt-example" style="border-left: 3px solid var(--accent-error); padding: 14px;">
+                <div class="prompt-label bad">✕ BAD</div>
+                <div class="prompt-text">"update" / "fix stuff" / "wip"</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 12: Push and Pull -->
+    <div class="slide" data-slide="12">
+      <span class="slide-tag">Syncing</span>
+      <h1 class="slide-title">Push & Pull</h1>
+      <p class="slide-subtitle">Sync your changes with GitHub</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card" style="border-top: 3px solid var(--accent-info);">
+            <div style="font-size: 28px; margin-bottom: 12px;">⬆️</div>
+            <div class="card-title">Push</div>
+            <p class="card-text">Upload your commits to GitHub. Others can now see your changes. Click "Sync Changes" or the cloud icon in the status bar.</p>
+          </div>
+
+          <div class="card" style="border-top: 3px solid var(--accent-success);">
+            <div style="font-size: 28px; margin-bottom: 12px;">⬇️</div>
+            <div class="card-title">Pull</div>
+            <p class="card-text">Download changes others have made. Always pull before starting new work to avoid conflicts.</p>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-number">TYPICAL WORKFLOW</div>
+            <div class="code-block" style="margin-top: 16px;">
+              <span class="code-line"><span class="code-comment"># 1. Start your day - get latest changes</span></span>
+              <span class="code-line"><span class="code-keyword">git pull</span></span>
+              <span class="code-line"></span>
+              <span class="code-line"><span class="code-comment"># 2. Make your changes...</span></span>
+              <span class="code-line"></span>
+              <span class="code-line"><span class="code-comment"># 3. Save your work</span></span>
+              <span class="code-line"><span class="code-keyword">git add .</span></span>
+              <span class="code-line"><span class="code-keyword">git commit -m</span> <span class="code-string">"your message"</span></span>
+              <span class="code-line"></span>
+              <span class="code-line"><span class="code-comment"># 4. Share with team</span></span>
+              <span class="code-line"><span class="code-keyword">git push</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 13: Section - AI Modes -->
+    <div class="slide section-slide" data-slide="13">
+      <div class="section-number">PART 03</div>
+      <h2 class="section-title">Working with AI</h2>
+      <div class="section-divider"></div>
+      <p class="section-subtitle">Ask • Agent • Plan</p>
+    </div>
+
+    <!-- Slide 14: Three Modes Overview -->
+    <div class="slide" data-slide="14">
+      <span class="slide-tag">AI Modes</span>
+      <h1 class="slide-title">The Three AI Modes</h1>
+      <p class="slide-subtitle">Choose the right mode for your task</p>
+
+      <div style="display: flex; gap: 24px; flex: 1; opacity: 0; animation: fadeInUp 0.5s 0.4s forwards;">
+        <div class="mode-card ask">
+          <div class="mode-icon">💬</div>
+          <div class="mode-title">Ask Mode</div>
+          <p class="mode-desc">Ask questions and get answers. AI explains code, helps debug, and suggests solutions — without making changes.</p>
+          <div class="mode-example">"What does this function do?"<br>"Why am I getting this error?"</div>
+        </div>
+
+        <div class="mode-card agent">
+          <div class="mode-icon">🤖</div>
+          <div class="mode-title">Agent Mode</div>
+          <p class="mode-desc">AI takes action. Creates files, writes code, and makes edits across your project automatically.</p>
+          <div class="mode-example">"Create a contact form with validation"<br>"Add dark mode to this app"</div>
+        </div>
+
+        <div class="mode-card plan">
+          <div class="mode-icon">📋</div>
+          <div class="mode-title">Plan Mode</div>
+          <p class="mode-desc">AI creates a step-by-step plan first. You review and approve before any changes are made.</p>
+          <div class="mode-example">"Refactor the authentication system"<br>"Add a new feature for user profiles"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 15: Ask Mode Deep Dive -->
+    <div class="slide" data-slide="15">
+      <span class="slide-tag">Ask Mode</span>
+      <h1 class="slide-title">Ask Mode — Your Learning Partner</h1>
+      <p class="slide-subtitle">Get explanations without changing code</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">Best For</div>
+            <ul class="feature-list" style="margin-top: 12px;">
+              <li><span class="icon check">✓</span> Understanding unfamiliar code</li>
+              <li><span class="icon check">✓</span> Debugging errors</li>
+              <li><span class="icon check">✓</span> Learning new concepts</li>
+              <li><span class="icon check">✓</span> Getting recommendations</li>
+              <li><span class="icon check">✓</span> Exploring before making changes</li>
+            </ul>
+          </div>
+
+          <div class="tip-box">
+            <span class="icon">💡</span>
+            <span class="text"><strong>Use @file</strong> to point AI at specific files when asking questions. This gives better, more relevant answers.</span>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="chat-container" style="flex: 1;">
+            <div class="chat-message user">
+              <div class="chat-avatar">👤</div>
+              <div class="chat-bubble">Why isn't my flexbox centering properly?</div>
+            </div>
+            <div class="chat-message ai">
+              <div class="chat-avatar">🤖</div>
+              <div class="chat-bubble">Looking at your CSS, you have <code>display: flex</code> but you're missing two key properties:<br><br><code>justify-content: center;</code> (horizontal)<br><code>align-items: center;</code> (vertical)</div>
+            </div>
+            <div class="chat-message user">
+              <div class="chat-avatar">👤</div>
+              <div class="chat-bubble">Can you show me the complete fix?</div>
+            </div>
+            <div class="chat-message ai">
+              <div class="chat-avatar">🤖</div>
+              <div class="chat-bubble"><code>.container {<br>&nbsp;&nbsp;display: flex;<br>&nbsp;&nbsp;justify-content: center;<br>&nbsp;&nbsp;align-items: center;<br>}</code></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 16: Agent Mode Deep Dive -->
+    <div class="slide" data-slide="16">
+      <span class="slide-tag">Agent Mode</span>
+      <h1 class="slide-title">Agent Mode — AI Does the Work</h1>
+      <p class="slide-subtitle">Describe what you want, AI builds it</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">Example Prompt</div>
+            <div class="code-block" style="margin-top: 12px;">
+              <span class="code-line"><span class="code-string">"Create a contact form with:</span></span>
+              <span class="code-line"><span class="code-string">- Name, email, message fields</span></span>
+              <span class="code-line"><span class="code-string">- Email validation</span></span>
+              <span class="code-line"><span class="code-string">- Submit button with loading state</span></span>
+              <span class="code-line"><span class="code-string">- Success/error messages</span></span>
+              <span class="code-line"><span class="code-string">- Style with Tailwind"</span></span>
+            </div>
+          </div>
+
+          <div class="card card-accent success">
+            <div class="card-title">What Agent Does</div>
+            <ul class="feature-list" style="margin-top: 8px;">
+              <li><span class="icon check">✓</span> Creates new files</li>
+              <li><span class="icon check">✓</span> Writes complete code</li>
+              <li><span class="icon check">✓</span> Edits existing files</li>
+              <li><span class="icon check">✓</span> Runs terminal commands</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-number">AI OUTPUT</div>
+            <div class="code-block" style="margin-top: 12px; font-size: 12px;">
+              <span class="code-line"><span class="code-keyword">function</span> ContactForm() {</span>
+              <span class="code-line">  <span class="code-keyword">const</span> [loading, setLoading] = useState(<span class="code-value">false</span>);</span>
+              <span class="code-line">  <span class="code-keyword">const</span> [status, setStatus] = useState(<span class="code-value">null</span>);</span>
+              <span class="code-line"></span>
+              <span class="code-line">  <span class="code-keyword">return</span> (</span>
+              <span class="code-line">    &lt;<span class="code-value">form</span> className=<span class="code-string">"space-y-4"</span>&gt;</span>
+              <span class="code-line">      &lt;<span class="code-value">input</span></span>
+              <span class="code-line">        type=<span class="code-string">"email"</span></span>
+              <span class="code-line">        placeholder=<span class="code-string">"Email"</span></span>
+              <span class="code-line">        required</span>
+              <span class="code-line">      /&gt;</span>
+              <span class="code-line">      <span class="code-comment">// ... more code</span></span>
+              <span class="code-line">    &lt;/<span class="code-value">form</span>&gt;</span>
+              <span class="code-line">  );</span>
+              <span class="code-line">}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 17: Prompt Tips -->
+    <div class="slide" data-slide="17">
+      <span class="slide-tag">Communication</span>
+      <h1 class="slide-title">Writing Great Prompts</h1>
+      <p class="slide-subtitle">The better your prompt, the better the result</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="prompt-example" style="border-left: 3px solid var(--accent-error);">
+            <div class="prompt-label bad">✕ VAGUE PROMPT</div>
+            <div class="prompt-text">"Make it look better"</div>
+          </div>
+
+          <div class="prompt-example" style="border-left: 3px solid var(--accent-success);">
+            <div class="prompt-label good">✓ SPECIFIC PROMPT</div>
+            <div class="prompt-text">"Add more padding (24px), round the corners (12px), and use a subtle shadow. Keep the same colors."</div>
+          </div>
+
+          <div class="prompt-example" style="border-left: 3px solid var(--accent-error);">
+            <div class="prompt-label bad">✕ TOO BROAD</div>
+            <div class="prompt-text">"Build me an e-commerce site"</div>
+          </div>
+
+          <div class="prompt-example" style="border-left: 3px solid var(--accent-success);">
+            <div class="prompt-label good">✓ STEP BY STEP</div>
+            <div class="prompt-text">"Create a product card component with image, title, price, and 'Add to Cart' button. Use grid layout for the cards."</div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-title">Prompt Formula</div>
+            <ul class="feature-list" style="margin-top: 16px;">
+              <li><span class="icon arrow">1</span> <strong>What</strong> — What do you want to create/change?</li>
+              <li><span class="icon arrow">2</span> <strong>Where</strong> — Which file or component?</li>
+              <li><span class="icon arrow">3</span> <strong>How</strong> — Specific styles, behaviors, or constraints</li>
+              <li><span class="icon arrow">4</span> <strong>Tech</strong> — What technologies to use (Tailwind, React, etc.)</li>
+            </ul>
+
+            <div style="margin-top: 24px; padding: 16px; background: var(--bg-secondary); border-radius: 8px;">
+              <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">EXAMPLE:</div>
+              <div style="font-size: 14px; color: var(--text-primary); line-height: 1.6;">
+                "In the <strong>Header component</strong>, add a <strong>mobile menu button</strong> that appears on screens under 768px. Use a <strong>hamburger icon</strong> and animate the menu sliding in from the right. Use <strong>Tailwind</strong> for styling."
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 18: Section - Advanced -->
+    <div class="slide section-slide" data-slide="18">
+      <div class="section-number">PART 04</div>
+      <h2 class="section-title">Advanced Features</h2>
+      <div class="section-divider"></div>
+      <p class="section-subtitle">Take your workflow to the next level</p>
+    </div>
+
+    <!-- Slide 19: Rules System Overview -->
+    <div class="slide" data-slide="19">
+      <span class="slide-tag">Configuration</span>
+      <h1 class="slide-title">Rules — Teach AI Your Style</h1>
+      <p class="slide-subtitle">Stop repeating yourself — define preferences once</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">What Are Rules?</div>
+            <p class="card-text" style="font-size: 15px; line-height: 1.7; color: var(--text-primary);">
+              Rules are instructions you give to Cursor AI that it remembers across all conversations. Instead of saying "use TypeScript" every time, you say it once in your rules.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Two Types of Rules</div>
+            <ul class="feature-list" style="margin-top: 12px;">
+              <li><span class="icon arrow">→</span> <strong>User Rules</strong> — Your personal preferences (all projects)</li>
+              <li><span class="icon arrow">→</span> <strong>Project Rules</strong> — Specific to one project (shared with team)</li>
+            </ul>
+          </div>
+
+          <div class="tip-box">
+            <span class="icon">💡</span>
+            <span class="text"><strong>Think of rules as:</strong> A brief for a freelancer. The more context you give upfront, the better the results.</span>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-number">WHAT TO INCLUDE IN RULES</div>
+            <div style="margin-top: 16px;">
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span style="font-size: 20px;">🛠️</span>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 4px;">Tech Stack</div>
+                  <div style="font-size: 13px; color: var(--text-muted);">React, Vue, Tailwind, etc.</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span style="font-size: 20px;">📁</span>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 4px;">File Structure</div>
+                  <div style="font-size: 13px; color: var(--text-muted);">Where to put components, utils, etc.</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span style="font-size: 20px;">✍️</span>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 4px;">Code Style</div>
+                  <div style="font-size: 13px; color: var(--text-muted);">Naming conventions, formatting</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0;">
+                <span style="font-size: 20px;">🎨</span>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 4px;">Design System</div>
+                  <div style="font-size: 13px; color: var(--text-muted);">Colors, spacing, typography</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 20: Rules Examples -->
+    <div class="slide" data-slide="20">
+      <span class="slide-tag">Rules Examples</span>
+      <h1 class="slide-title">Writing Effective Rules</h1>
+      <p class="slide-subtitle">Real examples you can copy and adapt</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card" style="border-top: 3px solid var(--accent-primary);">
+            <div class="card-title">User Rules Example</div>
+            <p class="card-text" style="margin-bottom: 12px;">Open with <span class="tag" style="display: inline; padding: 2px 8px;">⌘ + Shift + J</span></p>
+            <div class="code-block">
+              <span class="code-line"><span class="code-comment"># About Me</span></span>
+              <span class="code-line"><span class="code-value">I'm a designer learning to code.</span></span>
+              <span class="code-line"><span class="code-value">Explain things simply.</span></span>
+              <span class="code-line"></span>
+              <span class="code-line"><span class="code-comment"># Preferences</span></span>
+              <span class="code-line"><span class="code-value">Always use TypeScript</span></span>
+              <span class="code-line"><span class="code-value">Use Tailwind CSS for styling</span></span>
+              <span class="code-line"><span class="code-value">Prefer functional components</span></span>
+              <span class="code-line"><span class="code-value">Add comments for complex logic</span></span>
+              <span class="code-line"></span>
+              <span class="code-line"><span class="code-comment"># Communication</span></span>
+              <span class="code-line"><span class="code-value">Be concise in explanations</span></span>
+              <span class="code-line"><span class="code-value">Show examples when possible</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="border-top: 3px solid var(--accent-success);">
+            <div class="card-title">Project Rules Example</div>
+            <p class="card-text" style="margin-bottom: 12px;">Create file: <span class="tag success" style="display: inline; padding: 2px 8px;">.cursor/rules</span></p>
+            <div class="code-block">
+              <span class="code-line"><span class="code-comment"># Project: Portfolio Website</span></span>
+              <span class="code-line"></span>
+              <span class="code-line"><span class="code-keyword">Stack:</span></span>
+              <span class="code-line"><span class="code-value">Next.js 14 (App Router)</span></span>
+              <span class="code-line"><span class="code-value">Tailwind CSS + Framer Motion</span></span>
+              <span class="code-line"><span class="code-value">TypeScript strict mode</span></span>
+              <span class="code-line"></span>
+              <span class="code-line"><span class="code-keyword">Structure:</span></span>
+              <span class="code-line"><span class="code-value">/components — React components</span></span>
+              <span class="code-line"><span class="code-value">/lib — Utility functions</span></span>
+              <span class="code-line"><span class="code-value">/app — Pages and routes</span></span>
+              <span class="code-line"></span>
+              <span class="code-line"><span class="code-keyword">Design:</span></span>
+              <span class="code-line"><span class="code-value">Primary: #6366f1 (Indigo)</span></span>
+              <span class="code-line"><span class="code-value">Spacing: 4px base unit</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 21: Visual Editor Overview -->
+    <div class="slide" data-slide="21">
+      <span class="slide-tag">New in 2025</span>
+      <h1 class="slide-title">Visual Editor — Design in Code</h1>
+      <p class="slide-subtitle">The feature designers have been waiting for</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">What Is It?</div>
+            <p class="card-text" style="font-size: 15px; line-height: 1.7; color: var(--text-primary);">
+              A built-in browser that lets you click on any element in your running app and edit it visually. Changes are automatically written to your actual code files.
+            </p>
+          </div>
+
+          <div class="comparison-grid" style="gap: 16px;">
+            <div class="card" style="padding: 16px; border-left: 3px solid var(--accent-error);">
+              <div style="font-size: 12px; color: var(--accent-error); font-weight: 600; margin-bottom: 8px;">DEVTOOLS</div>
+              <p class="card-text" style="font-size: 13px;">Changes disappear on refresh</p>
+            </div>
+            <div class="card" style="padding: 16px; border-left: 3px solid var(--accent-success);">
+              <div style="font-size: 12px; color: var(--accent-success); font-weight: 600; margin-bottom: 8px;">VISUAL EDITOR</div>
+              <p class="card-text" style="font-size: 13px;">Changes saved to your code</p>
+            </div>
+          </div>
+
+          <div class="tip-box">
+            <span class="icon">🎨</span>
+            <span class="text"><strong>Perfect for:</strong> Tweaking padding, colors, fonts, and layout without writing CSS by hand.</span>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-number">KEY FEATURES</div>
+            <div style="margin-top: 16px;">
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border);">
+                <span style="font-size: 24px;">👆</span>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 4px;">Click to Select</div>
+                  <div style="font-size: 13px; color: var(--text-muted);">Click any element to see its styles and component</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border);">
+                <span style="font-size: 24px;">✏️</span>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 4px;">Edit Visually</div>
+                  <div style="font-size: 13px; color: var(--text-muted);">Adjust colors, spacing, sizes with sliders</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border);">
+                <span style="font-size: 24px;">💬</span>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 4px;">Describe Changes</div>
+                  <div style="font-size: 13px; color: var(--text-muted);">"Make this bigger" — AI understands context</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 14px 0;">
+                <span style="font-size: 24px;">💾</span>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 4px;">Auto-Save to Code</div>
+                  <div style="font-size: 13px; color: var(--text-muted);">Changes written directly to your files</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 22: Visual Editor in Action -->
+    <div class="slide" data-slide="22">
+      <span class="slide-tag">Visual Editor</span>
+      <h1 class="slide-title">Visual Editor in Action</h1>
+      <p class="slide-subtitle">See how it works in practice</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Open Browser Panel</h4>
+                <p>Click the browser icon or press ⌘+Shift+B</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Enter Your App URL</h4>
+                <p>Usually localhost:3000 for local development</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Enable Visual Mode</h4>
+                <p>Click the cursor icon to enable element selection</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <h4>Click & Edit</h4>
+                <p>Select elements and describe your changes</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="chat-container" style="flex: 1;">
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">REAL EXAMPLE</div>
+            <div class="chat-message user">
+              <div class="chat-avatar">👤</div>
+              <div class="chat-bubble">*clicks on navigation bar*<br><br>Make this sticky, add a subtle shadow, and blur the background</div>
+            </div>
+            <div class="chat-message ai">
+              <div class="chat-avatar">🤖</div>
+              <div class="chat-bubble">
+                Updated <strong>Navbar.tsx</strong>:<br><br>
+                <code style="display: block; margin: 8px 0;">+ sticky top-0 z-50</code>
+                <code style="display: block; margin: 8px 0;">+ shadow-sm</code>
+                <code style="display: block; margin: 8px 0;">+ backdrop-blur-md bg-white/80</code>
+                <br>✓ Saved to file
+              </div>
+            </div>
+          </div>
+
+          <div class="warning-box" style="margin-top: 16px;">
+            <span class="icon">⚠️</span>
+            <span class="text"><strong>Note:</strong> Visual Editor works best with React, Vue, and Svelte projects. Limited support for vanilla HTML.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 23: Background Agents Overview -->
+    <div class="slide" data-slide="23">
+      <span class="slide-tag">Power Feature</span>
+      <h1 class="slide-title">Background Agents</h1>
+      <p class="slide-subtitle">Like having a team of developers working for you</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">What Are Background Agents?</div>
+            <p class="card-text" style="font-size: 15px; line-height: 1.7; color: var(--text-primary);">
+              AI agents that work on tasks independently in the background. They clone your repo to a remote server, work on a separate branch, and push changes when done. You can run up to 8 simultaneously.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-title">How It's Different from Agent Mode</div>
+            <div style="margin-top: 12px;">
+              <div style="display: flex; gap: 16px;">
+                <div style="flex: 1; padding: 12px; background: var(--bg-secondary); border-radius: 8px;">
+                  <div style="font-size: 12px; color: var(--accent-info); font-weight: 600; margin-bottom: 6px;">AGENT MODE</div>
+                  <p style="font-size: 13px; color: var(--text-muted);">Works in your current session. You wait for it to finish.</p>
+                </div>
+                <div style="flex: 1; padding: 12px; background: var(--bg-secondary); border-radius: 8px;">
+                  <div style="font-size: 12px; color: var(--accent-success); font-weight: 600; margin-bottom: 6px;">BACKGROUND AGENT</div>
+                  <p style="font-size: 13px; color: var(--text-muted);">Works remotely. You keep working while it runs.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="highlight-box" style="margin-bottom: 20px;">
+            <div class="big-text">Run 8 Agents in Parallel</div>
+            <div class="sub-text">Each on its own branch, working simultaneously</div>
+          </div>
+
+          <div class="agent-grid" style="grid-template-columns: repeat(4, 1fr); gap: 12px;">
+            <div class="agent-card" style="padding: 16px;">
+              <div class="emoji" style="font-size: 24px;">🎨</div>
+              <div class="name" style="font-size: 11px;">UI</div>
+              <div class="status" style="font-size: 10px;">Active</div>
+            </div>
+            <div class="agent-card" style="padding: 16px;">
+              <div class="emoji" style="font-size: 24px;">🧪</div>
+              <div class="name" style="font-size: 11px;">Tests</div>
+              <div class="status" style="font-size: 10px;">Active</div>
+            </div>
+            <div class="agent-card" style="padding: 16px;">
+              <div class="emoji" style="font-size: 24px;">📝</div>
+              <div class="name" style="font-size: 11px;">Docs</div>
+              <div class="status" style="font-size: 10px;">Active</div>
+            </div>
+            <div class="agent-card" style="padding: 16px;">
+              <div class="emoji" style="font-size: 24px;">🔧</div>
+              <div class="name" style="font-size: 11px;">Bugs</div>
+              <div class="status" style="font-size: 10px;">Active</div>
+            </div>
+          </div>
+
+          <div class="warning-box" style="margin-top: 16px;">
+            <span class="icon">💳</span>
+            <span class="text"><strong>Pro/Business only:</strong> Background agents require a paid subscription.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 24: When to Use Background Agents -->
+    <div class="slide" data-slide="24">
+      <span class="slide-tag">Background Agents</span>
+      <h1 class="slide-title">When to Use Background Agents</h1>
+      <p class="slide-subtitle">Match the right tool to the task</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card" style="border-top: 3px solid var(--accent-success);">
+            <div class="card-title" style="color: var(--accent-success);">✓ Great For</div>
+            <ul class="feature-list" style="margin-top: 12px;">
+              <li><span class="icon check">✓</span> <strong>Long-running tasks</strong> — Features that take 30+ minutes</li>
+              <li><span class="icon check">✓</span> <strong>Parallel work</strong> — Multiple independent features</li>
+              <li><span class="icon check">✓</span> <strong>Overnight tasks</strong> — Start before bed, review in morning</li>
+              <li><span class="icon check">✓</span> <strong>Code cleanup</strong> — Refactoring, adding tests, docs</li>
+              <li><span class="icon check">✓</span> <strong>Explorations</strong> — Try different approaches simultaneously</li>
+            </ul>
+          </div>
+
+          <div class="card" style="border-top: 3px solid var(--accent-error);">
+            <div class="card-title" style="color: var(--accent-error);">✗ Not Ideal For</div>
+            <ul class="feature-list" style="margin-top: 12px;">
+              <li><span class="icon x">✗</span> Quick fixes (use regular Agent)</li>
+              <li><span class="icon x">✗</span> Tasks needing constant feedback</li>
+              <li><span class="icon x">✗</span> Highly experimental code</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-number">EXAMPLE WORKFLOW</div>
+            <div style="margin-top: 16px;">
+              <div style="padding: 14px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 12px;">
+                <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Morning</div>
+                <div style="font-size: 14px; color: var(--text-primary);">"Add user authentication with login, signup, and forgot password"</div>
+                <div style="margin-top: 8px;"><span class="tag" style="font-size: 11px;">Agent 1 started</span></div>
+              </div>
+              <div style="padding: 14px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 12px;">
+                <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">At the same time</div>
+                <div style="font-size: 14px; color: var(--text-primary);">"Write unit tests for all API endpoints"</div>
+                <div style="margin-top: 8px;"><span class="tag secondary" style="font-size: 11px;">Agent 2 started</span></div>
+              </div>
+              <div style="padding: 14px; background: var(--bg-secondary); border-radius: 8px;">
+                <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Later</div>
+                <div style="font-size: 14px; color: var(--text-primary);">Review PRs, merge changes, continue working</div>
+                <div style="margin-top: 8px;"><span class="tag success" style="font-size: 11px;">2 PRs ready for review</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 25: Common Mistakes -->
+    <div class="slide" data-slide="25">
+      <span class="slide-tag">Avoid These</span>
+      <h1 class="slide-title">Common Mistakes</h1>
+      <p class="slide-subtitle">Learn from others' errors</p>
+
+      <div class="mistakes-grid" style="opacity: 0; animation: fadeInUp 0.5s 0.4s forwards;">
+        <div class="mistake-card">
+          <h4>❌ Asking for too much at once</h4>
+          <p>"Build me a complete e-commerce site with cart, checkout, user accounts..."</p>
+          <div class="fix">✓ Fix: Break into small, specific tasks. One feature at a time.</div>
+        </div>
+
+        <div class="mistake-card">
+          <h4>❌ Not reading the output</h4>
+          <p>Accepting all changes without reviewing what AI actually did.</p>
+          <div class="fix">✓ Fix: Always review the diff before accepting changes.</div>
+        </div>
+
+        <div class="mistake-card">
+          <h4>❌ Forgetting to commit</h4>
+          <p>Working for hours without saving progress, then something breaks.</p>
+          <div class="fix">✓ Fix: Commit after each working feature. Small, frequent commits.</div>
+        </div>
+
+        <div class="mistake-card">
+          <h4>❌ Ignoring errors</h4>
+          <p>Continuing to add features while existing code is broken.</p>
+          <div class="fix">✓ Fix: Always fix errors before moving to the next task.</div>
+        </div>
+
+        <div class="mistake-card">
+          <h4>❌ Not providing context</h4>
+          <p>"Fix the button" — which button? What's wrong with it?</p>
+          <div class="fix">✓ Fix: Use @file references and be specific about location.</div>
+        </div>
+
+        <div class="mistake-card">
+          <h4>❌ Fighting the AI</h4>
+          <p>Repeatedly asking the same thing when it's not working.</p>
+          <div class="fix">✓ Fix: Rephrase your request. Try a different approach.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 26: Debugging with AI -->
+    <div class="slide" data-slide="26">
+      <span class="slide-tag">Practical Skills</span>
+      <h1 class="slide-title">Debugging with AI</h1>
+      <p class="slide-subtitle">Fix errors faster than ever before</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">When You See an Error</div>
+            <div class="step-list" style="margin-top: 12px;">
+              <div class="step-item" style="padding: 14px;">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Copy the Full Error</h4>
+                  <p>Select the entire error message from terminal</p>
+                </div>
+              </div>
+              <div class="step-item" style="padding: 14px;">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Paste in Chat</h4>
+                  <p>Press ⌘+L and paste the error</p>
+                </div>
+              </div>
+              <div class="step-item" style="padding: 14px;">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Ask to Fix</h4>
+                  <p>"Fix this error and explain what was wrong"</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">Magic Prompts for Debugging</div>
+            <div style="margin-top: 12px;">
+              <div class="code-block" style="margin-bottom: 12px;">
+                <span class="code-line"><span class="code-string">"Fix this error and explain why it happened"</span></span>
+              </div>
+              <div class="code-block" style="margin-bottom: 12px;">
+                <span class="code-line"><span class="code-string">"Why isn't this working? [paste code]"</span></span>
+              </div>
+              <div class="code-block" style="margin-bottom: 12px;">
+                <span class="code-line"><span class="code-string">"This should do X but it's doing Y. Fix it."</span></span>
+              </div>
+              <div class="code-block">
+                <span class="code-line"><span class="code-string">"Add console.logs to help me debug this"</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tip-box" style="margin-top: 16px;">
+            <span class="icon">💡</span>
+            <span class="text"><strong>Pro tip:</strong> Use ⌘+Shift+L to add selected code directly to chat with the error message.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 27: Working with Existing Code -->
+    <div class="slide" data-slide="27">
+      <span class="slide-tag">Practical Skills</span>
+      <h1 class="slide-title">Working with Existing Code</h1>
+      <p class="slide-subtitle">Join a project without getting lost</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">First Steps on Any New Project</div>
+            <ul class="feature-list" style="margin-top: 12px;">
+              <li><span class="icon arrow">1</span> <strong>Ask for overview:</strong> "Explain the structure of this project"</li>
+              <li><span class="icon arrow">2</span> <strong>Find entry point:</strong> "Where is the main entry file?"</li>
+              <li><span class="icon arrow">3</span> <strong>Understand data:</strong> "How does data flow in this app?"</li>
+              <li><span class="icon arrow">4</span> <strong>Locate styles:</strong> "Where are the styles/CSS defined?"</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Useful "Explain" Prompts</div>
+            <div style="margin-top: 12px;">
+              <div class="code-block">
+                <span class="code-line"><span class="code-string">"@codebase What does this project do?"</span></span>
+                <span class="code-line"></span>
+                <span class="code-line"><span class="code-string">"Explain @Header.tsx like I'm a beginner"</span></span>
+                <span class="code-line"></span>
+                <span class="code-line"><span class="code-string">"What files are related to authentication?"</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-number">THE "EXPLORE FIRST" RULE</div>
+            <div style="margin-top: 16px; padding: 20px; background: var(--bg-secondary); border-radius: 12px; text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 16px;">🔍 → 📝 → 🛠️</div>
+              <div style="font-size: 15px; color: var(--text-primary); margin-bottom: 8px; font-weight: 600;">
+                Explore → Understand → Change
+              </div>
+              <div style="font-size: 13px; color: var(--text-muted);">
+                Always use Ask mode before Agent mode on unfamiliar code
+              </div>
+            </div>
+          </div>
+
+          <div class="warning-box" style="margin-top: 16px;">
+            <span class="icon">⚠️</span>
+            <span class="text"><strong>Don't:</strong> Jump straight into making changes. You might break things you don't understand yet.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 28: Quick Wins -->
+    <div class="slide" data-slide="28">
+      <span class="slide-tag">Practical Skills</span>
+      <h1 class="slide-title">Quick Wins — AI Superpowers</h1>
+      <p class="slide-subtitle">Things AI does exceptionally well</p>
+
+      <div class="content-grid" style="opacity: 0; animation: fadeInUp 0.5s 0.4s forwards;">
+        <div class="card">
+          <div class="card-icon" style="background: rgba(16, 185, 129, 0.1);">📱</div>
+          <div class="card-title">Make It Responsive</div>
+          <p class="card-text">"Make this component responsive. Mobile-first, breakpoints at 768px and 1024px."</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon" style="background: rgba(99, 102, 241, 0.1);">🎨</div>
+          <div class="card-title">Refactor CSS</div>
+          <p class="card-text">"Convert this CSS to Tailwind classes" or "Clean up these styles and remove duplicates."</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon" style="background: rgba(245, 158, 11, 0.1);">✨</div>
+          <div class="card-title">Add Animations</div>
+          <p class="card-text">"Add hover effects to all buttons" or "Animate this list items on scroll."</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon" style="background: rgba(139, 92, 246, 0.1);">🌙</div>
+          <div class="card-title">Dark Mode</div>
+          <p class="card-text">"Add dark mode support using CSS variables. Include a toggle button."</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon" style="background: rgba(59, 130, 246, 0.1);">📋</div>
+          <div class="card-title">Form Validation</div>
+          <p class="card-text">"Add validation to this form with helpful error messages."</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon" style="background: rgba(239, 68, 68, 0.1);">🔄</div>
+          <div class="card-title">Convert Frameworks</div>
+          <p class="card-text">"Convert this Vue component to React" or "Rewrite using TypeScript."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 29: Context Is King -->
+    <div class="slide" data-slide="29">
+      <span class="slide-tag">Pro Tips</span>
+      <h1 class="slide-title">Context Is King</h1>
+      <p class="slide-subtitle">Better context = better results</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">The @ Symbol — Your Secret Weapon</div>
+            <div style="margin-top: 16px;">
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span class="tag" style="min-width: 80px;">@file</span>
+                <div style="font-size: 14px; color: var(--text-secondary);">Reference a specific file</div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span class="tag" style="min-width: 80px;">@folder</span>
+                <div style="font-size: 14px; color: var(--text-secondary);">Reference an entire folder</div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span class="tag success" style="min-width: 80px;">@codebase</span>
+                <div style="font-size: 14px; color: var(--text-secondary);">Search entire project</div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span class="tag warning" style="min-width: 80px;">@web</span>
+                <div style="font-size: 14px; color: var(--text-secondary);">Search the internet</div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0;">
+                <span class="tag secondary" style="min-width: 80px;">@docs</span>
+                <div style="font-size: 14px; color: var(--text-secondary);">Reference documentation</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">Context Tips That Work</div>
+            <div style="margin-top: 12px;">
+              <div class="prompt-example" style="border-left: 3px solid var(--accent-success); margin-bottom: 12px;">
+                <div class="prompt-label good">WITH CONTEXT</div>
+                <div class="prompt-text">"Look at @Button.tsx and create a similar component for icons"</div>
+              </div>
+              <div class="prompt-example" style="border-left: 3px solid var(--accent-success); margin-bottom: 12px;">
+                <div class="prompt-label good">REFERENCING STYLES</div>
+                <div class="prompt-text">"Use the same styling as @components/Card.tsx"</div>
+              </div>
+              <div class="prompt-example" style="border-left: 3px solid var(--accent-success);">
+                <div class="prompt-label good">FINDING PATTERNS</div>
+                <div class="prompt-text">"@codebase How do we handle API calls in this project?"</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tip-box" style="margin-top: 16px;">
+            <span class="icon">💡</span>
+            <span class="text"><strong>Image support:</strong> Paste screenshots directly in chat! Describe your Figma mockup visually.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 30: When Things Go Wrong -->
+    <div class="slide" data-slide="30">
+      <span class="slide-tag">Recovery</span>
+      <h1 class="slide-title">When Things Go Wrong</h1>
+      <p class="slide-subtitle">Don't panic — here's how to recover</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card" style="border-top: 3px solid var(--accent-error);">
+            <div class="card-title" style="color: var(--accent-error);">AI Broke Something?</div>
+            <div class="step-list" style="margin-top: 12px;">
+              <div class="step-item" style="padding: 12px;">
+                <div class="step-number" style="background: var(--accent-error);">1</div>
+                <div class="step-content">
+                  <h4>Don't Accept Changes</h4>
+                  <p>Click "Reject All" if you haven't accepted yet</p>
+                </div>
+              </div>
+              <div class="step-item" style="padding: 12px;">
+                <div class="step-number" style="background: var(--accent-warning);">2</div>
+                <div class="step-content">
+                  <h4>Already Accepted?</h4>
+                  <p>Use ⌘+Z (undo) immediately — it works!</p>
+                </div>
+              </div>
+              <div class="step-item" style="padding: 12px;">
+                <div class="step-number" style="background: var(--accent-success);">3</div>
+                <div class="step-content">
+                  <h4>Saved & Committed?</h4>
+                  <p>Use Git to go back to your last commit</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-number">EMERGENCY GIT COMMANDS</div>
+            <div class="code-block" style="margin-top: 16px;">
+              <span class="code-line"><span class="code-comment"># Undo uncommitted changes in one file</span></span>
+              <span class="code-line"><span class="code-keyword">git checkout</span> -- filename.tsx</span>
+              <span class="code-line"></span>
+              <span class="code-line"><span class="code-comment"># Undo ALL uncommitted changes</span></span>
+              <span class="code-line"><span class="code-keyword">git checkout</span> -- .</span>
+              <span class="code-line"></span>
+              <span class="code-line"><span class="code-comment"># Go back to last commit (nuclear option)</span></span>
+              <span class="code-line"><span class="code-keyword">git reset</span> --hard HEAD</span>
+              <span class="code-line"></span>
+              <span class="code-line"><span class="code-comment"># See what changed</span></span>
+              <span class="code-line"><span class="code-keyword">git diff</span></span>
+            </div>
+          </div>
+
+          <div class="tip-box" style="margin-top: 16px;">
+            <span class="icon">💡</span>
+            <span class="text"><strong>Prevention:</strong> Commit often! Small commits = easy recovery. "Working navbar" is a great commit.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 31: Best Practices - Workflow -->
+    <div class="slide" data-slide="31">
+      <span class="slide-tag">Best Practices</span>
+      <h1 class="slide-title">Best Practices — Workflow</h1>
+      <p class="slide-subtitle">Develop good habits from day one</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">The Golden Rule</div>
+            <div class="highlight-box" style="margin-top: 12px;">
+              <div class="big-text" style="font-size: 22px;">Commit → Change → Test → Repeat</div>
+              <div class="sub-text">Always have a safe point to return to</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Before Starting Any Task</div>
+            <ul class="feature-list" style="margin-top: 12px;">
+              <li><span class="icon check">✓</span> Pull latest changes from Git</li>
+              <li><span class="icon check">✓</span> Make sure your app runs without errors</li>
+              <li><span class="icon check">✓</span> Commit any uncommitted work</li>
+              <li><span class="icon check">✓</span> Create a new branch for big features</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-title">Working with AI — Do's and Don'ts</div>
+            <div style="margin-top: 16px;">
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span style="color: var(--accent-success); font-weight: 600;">DO</span>
+                <div style="font-size: 14px; color: var(--text-secondary);">Start with Ask mode to understand code before changing it</div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span style="color: var(--accent-success); font-weight: 600;">DO</span>
+                <div style="font-size: 14px; color: var(--text-secondary);">Use @file to give AI context about specific files</div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span style="color: var(--accent-success); font-weight: 600;">DO</span>
+                <div style="font-size: 14px; color: var(--text-secondary);">Review diffs carefully before accepting changes</div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span style="color: var(--accent-error); font-weight: 600;">DON'T</span>
+                <div style="font-size: 14px; color: var(--text-secondary);">Accept all changes without reviewing them</div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0;">
+                <span style="color: var(--accent-error); font-weight: 600;">DON'T</span>
+                <div style="font-size: 14px; color: var(--text-secondary);">Keep working when you have errors — fix them first</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 32: Best Practices - Communication -->
+    <div class="slide" data-slide="32">
+      <span class="slide-tag">Tips</span>
+      <h1 class="slide-title">Best Practices — Talking to AI</h1>
+      <p class="slide-subtitle">Get better results with better prompts</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">The WHAT-WHERE-HOW Formula</div>
+            <div style="margin-top: 16px;">
+              <div style="padding: 14px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 12px; border-left: 3px solid var(--accent-primary);">
+                <div style="font-size: 12px; color: var(--accent-primary); font-weight: 600; margin-bottom: 6px;">WHAT</div>
+                <div style="font-size: 14px; color: var(--text-primary);">What do you want to create or change?</div>
+              </div>
+              <div style="padding: 14px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 12px; border-left: 3px solid var(--accent-success);">
+                <div style="font-size: 12px; color: var(--accent-success); font-weight: 600; margin-bottom: 6px;">WHERE</div>
+                <div style="font-size: 14px; color: var(--text-primary);">In which file or component?</div>
+              </div>
+              <div style="padding: 14px; background: var(--bg-secondary); border-radius: 8px; border-left: 3px solid var(--accent-secondary);">
+                <div style="font-size: 12px; color: var(--accent-secondary); font-weight: 600; margin-bottom: 6px;">HOW</div>
+                <div style="font-size: 14px; color: var(--text-primary);">Specific styles, behaviors, constraints</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-title">Example Prompts That Work</div>
+            <div style="margin-top: 16px;">
+              <div style="padding: 16px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 16px;">
+                <div style="font-size: 11px; color: var(--accent-success); font-weight: 600; margin-bottom: 8px;">✓ GREAT PROMPT</div>
+                <div style="font-size: 14px; color: var(--text-primary); line-height: 1.6;">
+                  "In the <strong>Header.tsx</strong> component, add a mobile menu button that appears below 768px. Use a hamburger icon (3 horizontal lines). When clicked, slide in a menu from the right with smooth animation. Use Tailwind for styling."
+                </div>
+              </div>
+              <div style="padding: 16px; background: var(--bg-secondary); border-radius: 8px;">
+                <div style="font-size: 11px; color: var(--accent-success); font-weight: 600; margin-bottom: 8px;">✓ GREAT PROMPT</div>
+                <div style="font-size: 14px; color: var(--text-primary); line-height: 1.6;">
+                  "Create a contact form component with name, email, and message fields. Add validation: name required (min 2 chars), email must be valid format, message required (min 10 chars). Show inline error messages in red below each field."
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 33: Best Practices - Designer Tips -->
+    <div class="slide" data-slide="33">
+      <span class="slide-tag">For Designers</span>
+      <h1 class="slide-title">Designer-Specific Tips</h1>
+      <p class="slide-subtitle">Leverage your design skills in Cursor</p>
+
+      <div class="three-col" style="opacity: 0; animation: fadeInUp 0.5s 0.4s forwards;">
+        <div class="card">
+          <div class="card-icon" style="background: rgba(99, 102, 241, 0.1);">🎨</div>
+          <div class="card-title">Use Visual Editor First</div>
+          <p class="card-text">Before writing prompts, try clicking and adjusting elements visually. It's more intuitive for designers.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon" style="background: rgba(16, 185, 129, 0.1);">📐</div>
+          <div class="card-title">Be Specific with Design</div>
+          <p class="card-text">Include exact values: "24px padding", "#6366f1 color", "border-radius: 12px". AI understands design tokens.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon" style="background: rgba(139, 92, 246, 0.1);">🖼️</div>
+          <div class="card-title">Reference Your Designs</div>
+          <p class="card-text">Paste screenshots or describe your Figma designs. "Match the card design from my mockup with..."</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon" style="background: rgba(245, 158, 11, 0.1);">📱</div>
+          <div class="card-title">Think Responsively</div>
+          <p class="card-text">Always mention breakpoints: "On mobile (under 768px), stack vertically. On desktop, use 3 columns."</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon" style="background: rgba(59, 130, 246, 0.1);">✨</div>
+          <div class="card-title">Request Animations</div>
+          <p class="card-text">AI is great at animations: "Add a subtle fade-in on scroll", "Hover: scale up 5% with smooth transition."</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon" style="background: rgba(239, 68, 68, 0.1);">🧩</div>
+          <div class="card-title">Component Thinking</div>
+          <p class="card-text">Design reusable pieces: "Create a Button component with variants: primary, secondary, outline."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 34: Resources -->
+    <div class="slide" data-slide="34">
+      <span class="slide-tag">Learn More</span>
+      <h1 class="slide-title">Resources</h1>
+      <p class="slide-subtitle">Continue your learning journey</p>
+
+      <div class="resource-grid" style="opacity: 0; animation: fadeInUp 0.5s 0.4s forwards;">
+        <div class="resource-card">
+          <h3>CURSOR</h3>
+          <div class="resource-item">
+            <div class="resource-name">Official Docs</div>
+            <div class="resource-link">docs.cursor.com</div>
+          </div>
+          <div class="resource-item">
+            <div class="resource-name">Forum</div>
+            <div class="resource-link">forum.cursor.com</div>
+          </div>
+          <div class="resource-item">
+            <div class="resource-name">Changelog</div>
+            <div class="resource-link">cursor.com/changelog</div>
+          </div>
+          <div class="resource-item">
+            <div class="resource-name">Discord</div>
+            <div class="resource-link">Cursor community</div>
+          </div>
+        </div>
+
+        <div class="resource-card">
+          <h3>LEARNING CODE</h3>
+          <div class="resource-item">
+            <div class="resource-name">freeCodeCamp</div>
+            <div class="resource-link">freecodecamp.org</div>
+          </div>
+          <div class="resource-item">
+            <div class="resource-name">MDN Web Docs</div>
+            <div class="resource-link">developer.mozilla.org</div>
+          </div>
+          <div class="resource-item">
+            <div class="resource-name">CSS-Tricks</div>
+            <div class="resource-link">css-tricks.com</div>
+          </div>
+          <div class="resource-item">
+            <div class="resource-name">Tailwind Docs</div>
+            <div class="resource-link">tailwindcss.com</div>
+          </div>
+        </div>
+
+        <div class="resource-card">
+          <h3>GIT & GITHUB</h3>
+          <div class="resource-item">
+            <div class="resource-name">Git Handbook</div>
+            <div class="resource-link">guides.github.com</div>
+          </div>
+          <div class="resource-item">
+            <div class="resource-name">GitHub Skills</div>
+            <div class="resource-link">skills.github.com</div>
+          </div>
+          <div class="resource-item">
+            <div class="resource-name">Oh Shit, Git!?!</div>
+            <div class="resource-link">ohshitgit.com</div>
+          </div>
+          <div class="resource-item">
+            <div class="resource-name">Git Cheatsheet</div>
+            <div class="resource-link">education.github.com</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 35: Practice Time -->
+    <div class="slide" data-slide="35">
+      <span class="slide-tag">Hands-On</span>
+      <h1 class="slide-title">Let's Practice!</h1>
+      <p class="slide-subtitle">Time to build something real</p>
+
+      <div class="three-col" style="margin-bottom: 32px; opacity: 0; animation: fadeInUp 0.5s 0.4s forwards;">
+        <div class="practice-card">
+          <div class="emoji">📥</div>
+          <h3>Step 1: Clone</h3>
+          <p>Clone the practice repository from GitHub to your computer</p>
+        </div>
+        <div class="practice-card">
+          <div class="emoji">💻</div>
+          <h3>Step 2: Explore</h3>
+          <p>Open in Cursor, look around, ask AI to explain the code</p>
+        </div>
+        <div class="practice-card">
+          <div class="emoji">🚀</div>
+          <h3>Step 3: Build</h3>
+          <p>Use Agent mode to add features and make it your own</p>
+        </div>
+      </div>
+
+      <div class="highlight-box" style="max-width: 600px; margin: 0 auto; opacity: 0; animation: fadeInUp 0.5s 0.5s forwards;">
+        <div style="font-size: 14px; color: var(--text-muted); margin-bottom: 8px;">PRACTICE REPO</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 16px; color: var(--accent-primary);">
+          github.com/your-repo-here
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 36: End of Cursor Section / Start Sub-Agents -->
+    <div class="slide section-slide" data-slide="36">
+      <div class="section-number">END OF PART 01-04</div>
+      <h2 class="section-title">Cursor Workshop Complete!</h2>
+      <div class="section-divider"></div>
+      <p class="section-subtitle">Continue to Sub-Agents or return to menu</p>
+      <div style="display: flex; gap: 16px; justify-content: center; margin-top: 32px;">
+        <button class="cta-btn" onclick="goToSlide(1)" style="background: var(--bg-card); border: 1px solid var(--border); cursor: pointer;">
+          ← Back to Menu
+        </button>
+        <button class="cta-btn" onclick="goToSlide(37)" style="cursor: pointer;">
+          Continue to Sub-Agents →
+        </button>
+      </div>
+    </div>
+
+    <!-- Slide 37: Section - Claude Code Sub-Agents -->
+    <div class="slide section-slide" data-slide="37">
+      <div class="section-number">PART 05</div>
+      <h2 class="section-title">Claude Code Sub-Agents</h2>
+      <div class="section-divider"></div>
+      <p class="section-subtitle">Specialized AI assistants for complex tasks</p>
+    </div>
+
+    <!-- Slide 38: What are Sub-Agents -->
+    <div class="slide" data-slide="38">
+      <span class="slide-tag">Introduction</span>
+      <h1 class="slide-title">What Are Sub-Agents?</h1>
+      <p class="slide-subtitle">AI specialists that work independently on specific tasks</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card">
+            <p class="card-text" style="font-size: 16px; line-height: 1.7; color: var(--text-primary);">
+              Sub-agents are specialized AI assistants that handle specific types of tasks. Each runs in its own context window with custom prompts, specific tool access, and independent permissions.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Key Benefits</div>
+            <ul class="feature-list" style="margin-top: 12px;">
+              <li><span class="icon check">✓</span> <strong>Preserve context</strong> — Isolate exploration from main conversation</li>
+              <li><span class="icon check">✓</span> <strong>Enforce constraints</strong> — Limit tools a subagent can use</li>
+              <li><span class="icon check">✓</span> <strong>Run in parallel</strong> — Multiple subagents work simultaneously</li>
+              <li><span class="icon check">✓</span> <strong>Control costs</strong> — Route tasks to faster, cheaper models</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-number">HOW IT WORKS</div>
+            <div style="margin-top: 16px; padding: 20px; background: var(--bg-secondary); border-radius: 12px; text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 16px;">🧠 → 🤖 → 📋</div>
+              <div style="font-size: 15px; color: var(--text-primary); margin-bottom: 8px; font-weight: 600;">
+                Claude → Sub-Agent → Results
+              </div>
+              <div style="font-size: 13px; color: var(--text-muted);">
+                Claude delegates tasks, sub-agent works independently, returns summary
+              </div>
+            </div>
+          </div>
+
+          <div class="tip-box" style="margin-top: 16px;">
+            <span class="icon">💡</span>
+            <span class="text"><strong>Think of it as:</strong> Hiring specialists for specific jobs while you focus on the big picture.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 39: Built-in Sub-Agents -->
+    <div class="slide" data-slide="39">
+      <span class="slide-tag">Built-in Agents</span>
+      <h1 class="slide-title">The Three Built-in Sub-Agents</h1>
+      <p class="slide-subtitle">Ready to use out of the box</p>
+
+      <div style="display: flex; gap: 24px; flex: 1; opacity: 0; animation: fadeInUp 0.5s 0.4s forwards;">
+        <div class="mode-card ask">
+          <div class="mode-icon">🔍</div>
+          <div class="mode-title">Explore</div>
+          <p class="mode-desc">Fast, read-only agent for searching and analyzing codebases. Uses Haiku model for speed.</p>
+          <div class="mode-example">
+            <strong>Tools:</strong> Read-only (no Write/Edit)<br>
+            <strong>Best for:</strong> File discovery, code search, codebase exploration
+          </div>
+          <div style="margin-top: 12px;">
+            <span class="tag info" style="font-size: 11px;">Quick • Medium • Very Thorough</span>
+          </div>
+        </div>
+
+        <div class="mode-card agent">
+          <div class="mode-icon">📋</div>
+          <div class="mode-title">Plan</div>
+          <p class="mode-desc">Research agent used during plan mode to gather context before presenting a plan.</p>
+          <div class="mode-example">
+            <strong>Tools:</strong> Read-only (no Write/Edit)<br>
+            <strong>Best for:</strong> Codebase research for planning complex changes
+          </div>
+          <div style="margin-top: 12px;">
+            <span class="tag success" style="font-size: 11px;">Inherits Parent Model</span>
+          </div>
+        </div>
+
+        <div class="mode-card plan">
+          <div class="mode-icon">🛠️</div>
+          <div class="mode-title">General-Purpose</div>
+          <p class="mode-desc">Capable agent for complex, multi-step tasks requiring both exploration and action.</p>
+          <div class="mode-example">
+            <strong>Tools:</strong> All tools (complete access)<br>
+            <strong>Best for:</strong> Complex research, multi-step operations
+          </div>
+          <div style="margin-top: 12px;">
+            <span class="tag secondary" style="font-size: 11px;">Full Capabilities</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 40: Creating Custom Sub-Agents -->
+    <div class="slide" data-slide="40">
+      <span class="slide-tag">Custom Agents</span>
+      <h1 class="slide-title">Creating Custom Sub-Agents</h1>
+      <p class="slide-subtitle">Build specialized agents for your workflow</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">Two Ways to Create</div>
+            <div style="margin-top: 16px;">
+              <div style="padding: 14px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 12px; border-left: 3px solid var(--accent-success);">
+                <div style="font-size: 12px; color: var(--accent-success); font-weight: 600; margin-bottom: 6px;">RECOMMENDED: /agents COMMAND</div>
+                <div style="font-size: 14px; color: var(--text-primary);">Interactive interface with guided setup or Claude generation</div>
+              </div>
+              <div style="padding: 14px; background: var(--bg-secondary); border-radius: 8px; border-left: 3px solid var(--accent-primary);">
+                <div style="font-size: 12px; color: var(--accent-primary); font-weight: 600; margin-bottom: 6px;">MANUAL: CREATE MARKDOWN FILE</div>
+                <div style="font-size: 14px; color: var(--text-primary);">Create .md files with YAML frontmatter in agents folder</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Storage Locations</div>
+            <div style="margin-top: 12px; font-size: 13px;">
+              <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border);">
+                <span class="tag" style="font-size: 11px;">.claude/agents/</span>
+                <span style="color: var(--text-muted);">Project (shared with team)</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border);">
+                <span class="tag success" style="font-size: 11px;">~/.claude/agents/</span>
+                <span style="color: var(--text-muted);">User (all your projects)</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 10px 0;">
+                <span class="tag secondary" style="font-size: 11px;">--agents CLI flag</span>
+                <span style="color: var(--text-muted);">Session only</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-number">USING /agents COMMAND</div>
+            <div class="step-list" style="margin-top: 12px;">
+              <div class="step-item" style="padding: 12px;">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Run /agents</h4>
+                  <p>Opens interactive interface</p>
+                </div>
+              </div>
+              <div class="step-item" style="padding: 12px;">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Select "Create new agent"</h4>
+                  <p>Choose User-level or Project-level</p>
+                </div>
+              </div>
+              <div class="step-item" style="padding: 12px;">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Generate with Claude</h4>
+                  <p>Describe what you want and Claude creates it</p>
+                </div>
+              </div>
+              <div class="step-item" style="padding: 12px;">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                  <h4>Configure & Save</h4>
+                  <p>Select tools, model, and color</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 41: Sub-Agent File Format -->
+    <div class="slide" data-slide="41">
+      <span class="slide-tag">Configuration</span>
+      <h1 class="slide-title">Sub-Agent File Format</h1>
+      <p class="slide-subtitle">Markdown files with YAML frontmatter</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-number">EXAMPLE: CODE REVIEWER</div>
+            <div class="code-block" style="margin-top: 12px; font-size: 12px;">
+              <span class="code-line"><span class="code-comment">---</span></span>
+              <span class="code-line"><span class="code-keyword">name:</span> <span class="code-value">code-reviewer</span></span>
+              <span class="code-line"><span class="code-keyword">description:</span> <span class="code-string">Expert code reviewer.</span></span>
+              <span class="code-line">  <span class="code-string">Use proactively after code changes.</span></span>
+              <span class="code-line"><span class="code-keyword">tools:</span> <span class="code-value">Read, Grep, Glob, Bash</span></span>
+              <span class="code-line"><span class="code-keyword">model:</span> <span class="code-value">sonnet</span></span>
+              <span class="code-line"><span class="code-comment">---</span></span>
+              <span class="code-line"></span>
+              <span class="code-line"><span class="code-string">You are a senior code reviewer.</span></span>
+              <span class="code-line"></span>
+              <span class="code-line"><span class="code-string">When invoked:</span></span>
+              <span class="code-line"><span class="code-string">1. Run git diff to see changes</span></span>
+              <span class="code-line"><span class="code-string">2. Focus on modified files</span></span>
+              <span class="code-line"><span class="code-string">3. Check for security issues</span></span>
+              <span class="code-line"><span class="code-string">4. Provide actionable feedback</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">Available Fields</div>
+            <div style="margin-top: 12px; font-size: 13px;">
+              <div style="display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border);">
+                <span class="tag error" style="font-size: 10px; min-width: 70px;">REQUIRED</span>
+                <div><strong>name</strong> — Unique identifier (lowercase, hyphens)</div>
+              </div>
+              <div style="display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border);">
+                <span class="tag error" style="font-size: 10px; min-width: 70px;">REQUIRED</span>
+                <div><strong>description</strong> — When to use this agent</div>
+              </div>
+              <div style="display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border);">
+                <span class="tag" style="font-size: 10px; min-width: 70px;">OPTIONAL</span>
+                <div><strong>tools</strong> — Allowed tools (comma-separated)</div>
+              </div>
+              <div style="display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border);">
+                <span class="tag" style="font-size: 10px; min-width: 70px;">OPTIONAL</span>
+                <div><strong>disallowedTools</strong> — Tools to deny</div>
+              </div>
+              <div style="display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border);">
+                <span class="tag" style="font-size: 10px; min-width: 70px;">OPTIONAL</span>
+                <div><strong>model</strong> — sonnet, opus, haiku, inherit</div>
+              </div>
+              <div style="display: flex; gap: 12px; padding: 8px 0;">
+                <span class="tag" style="font-size: 10px; min-width: 70px;">OPTIONAL</span>
+                <div><strong>permissionMode</strong> — default, acceptEdits, etc.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tip-box" style="margin-top: 16px;">
+            <span class="icon">💡</span>
+            <span class="text"><strong>Pro tip:</strong> Include "proactively" in description for auto-delegation.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 42: Tool Permissions -->
+    <div class="slide" data-slide="42">
+      <span class="slide-tag">Security</span>
+      <h1 class="slide-title">Tool Permissions & Access Control</h1>
+      <p class="slide-subtitle">Control what each sub-agent can do</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="comparison-grid" style="gap: 16px;">
+            <div class="card" style="border-top: 3px solid var(--accent-success);">
+              <div class="card-title" style="color: var(--accent-success);">Allowlist Approach</div>
+              <p class="card-text" style="margin-bottom: 12px;">Specify ONLY allowed tools:</p>
+              <div class="code-block" style="font-size: 12px;">
+                <span class="code-line"><span class="code-keyword">tools:</span> <span class="code-value">Read, Grep, Glob</span></span>
+              </div>
+              <p class="card-text" style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">Agent can ONLY use these tools</p>
+            </div>
+
+            <div class="card" style="border-top: 3px solid var(--accent-error);">
+              <div class="card-title" style="color: var(--accent-error);">Denylist Approach</div>
+              <p class="card-text" style="margin-bottom: 12px;">Block specific tools:</p>
+              <div class="code-block" style="font-size: 12px;">
+                <span class="code-line"><span class="code-keyword">disallowedTools:</span> <span class="code-value">Write, Edit</span></span>
+              </div>
+              <p class="card-text" style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">All tools EXCEPT these</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top: 16px;">
+            <div class="card-title">Common Tools</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
+              <span class="tag" style="font-size: 11px;">Read</span>
+              <span class="tag" style="font-size: 11px;">Write</span>
+              <span class="tag" style="font-size: 11px;">Edit</span>
+              <span class="tag" style="font-size: 11px;">Bash</span>
+              <span class="tag" style="font-size: 11px;">Grep</span>
+              <span class="tag" style="font-size: 11px;">Glob</span>
+              <span class="tag" style="font-size: 11px;">AskUserQuestion</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card">
+            <div class="card-title">Permission Modes</div>
+            <div style="margin-top: 12px; font-size: 13px;">
+              <div style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+                <strong style="color: var(--accent-primary);">default</strong>
+                <p style="color: var(--text-muted); margin-top: 4px;">Standard permission prompts</p>
+              </div>
+              <div style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+                <strong style="color: var(--accent-success);">acceptEdits</strong>
+                <p style="color: var(--text-muted); margin-top: 4px;">Auto-accept file edits</p>
+              </div>
+              <div style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+                <strong style="color: var(--accent-warning);">dontAsk</strong>
+                <p style="color: var(--text-muted); margin-top: 4px;">Auto-deny permission prompts</p>
+              </div>
+              <div style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+                <strong style="color: var(--accent-error);">bypassPermissions</strong>
+                <p style="color: var(--text-muted); margin-top: 4px;">Skip all checks (use with caution!)</p>
+              </div>
+              <div style="padding: 10px 0;">
+                <strong style="color: var(--accent-secondary);">plan</strong>
+                <p style="color: var(--text-muted); margin-top: 4px;">Read-only exploration mode</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="warning-box" style="margin-top: 16px;">
+            <span class="icon">⚠️</span>
+            <span class="text"><strong>Warning:</strong> bypassPermissions skips ALL security checks. Use only for trusted automation.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 43: Sub-Agent Examples -->
+    <div class="slide" data-slide="43">
+      <span class="slide-tag">Examples</span>
+      <h1 class="slide-title">Custom Sub-Agent Examples</h1>
+      <p class="slide-subtitle">Real-world configurations you can use</p>
+
+      <div class="three-col" style="opacity: 0; animation: fadeInUp 0.5s 0.4s forwards;">
+        <div class="card" style="border-top: 3px solid var(--accent-info);">
+          <div class="card-icon" style="background: rgba(59, 130, 246, 0.1);">🔍</div>
+          <div class="card-title">Code Reviewer</div>
+          <div class="code-block" style="font-size: 11px; margin-top: 12px;">
+            <span class="code-line"><span class="code-keyword">name:</span> code-reviewer</span>
+            <span class="code-line"><span class="code-keyword">tools:</span> Read, Grep, Glob, Bash</span>
+            <span class="code-line"><span class="code-keyword">model:</span> sonnet</span>
+          </div>
+          <p class="card-text" style="margin-top: 12px;">Reviews code for quality, security, and best practices. Read-only access.</p>
+        </div>
+
+        <div class="card" style="border-top: 3px solid var(--accent-success);">
+          <div class="card-icon" style="background: rgba(16, 185, 129, 0.1);">🐛</div>
+          <div class="card-title">Debugger</div>
+          <div class="code-block" style="font-size: 11px; margin-top: 12px;">
+            <span class="code-line"><span class="code-keyword">name:</span> debugger</span>
+            <span class="code-line"><span class="code-keyword">tools:</span> Read, Edit, Bash, Grep</span>
+            <span class="code-line"><span class="code-keyword">model:</span> opus</span>
+          </div>
+          <p class="card-text" style="margin-top: 12px;">Analyzes errors, finds root causes, and implements fixes.</p>
+        </div>
+
+        <div class="card" style="border-top: 3px solid var(--accent-secondary);">
+          <div class="card-icon" style="background: rgba(139, 92, 246, 0.1);">📊</div>
+          <div class="card-title">Data Scientist</div>
+          <div class="code-block" style="font-size: 11px; margin-top: 12px;">
+            <span class="code-line"><span class="code-keyword">name:</span> data-scientist</span>
+            <span class="code-line"><span class="code-keyword">tools:</span> Bash, Read, Write</span>
+            <span class="code-line"><span class="code-keyword">model:</span> sonnet</span>
+          </div>
+          <p class="card-text" style="margin-top: 12px;">SQL queries, BigQuery operations, data analysis and insights.</p>
+        </div>
+      </div>
+
+      <div class="tip-box" style="margin-top: 24px; opacity: 0; animation: fadeInUp 0.5s 0.5s forwards;">
+        <span class="icon">💡</span>
+        <span class="text"><strong>Model selection:</strong> Use <strong>Haiku</strong> for fast simple tasks, <strong>Sonnet</strong> for balanced work, <strong>Opus</strong> for complex reasoning.</span>
+      </div>
+    </div>
+
+    <!-- Slide 44: Using Sub-Agents -->
+    <div class="slide" data-slide="44">
+      <span class="slide-tag">Usage</span>
+      <h1 class="slide-title">Using Sub-Agents</h1>
+      <p class="slide-subtitle">Automatic delegation vs explicit invocation</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card" style="border-top: 3px solid var(--accent-primary);">
+            <div class="card-title">Automatic Delegation</div>
+            <p class="card-text" style="margin-bottom: 12px;">Claude automatically uses sub-agents when your task matches their description.</p>
+            <div class="chat-container">
+              <div class="chat-message user">
+                <div class="chat-avatar">👤</div>
+                <div class="chat-bubble">Review the authentication code for security issues</div>
+              </div>
+              <div class="chat-message ai">
+                <div class="chat-avatar">🤖</div>
+                <div class="chat-bubble">I'll delegate this to the code-reviewer sub-agent...<br><br>✓ <em>Spawning code-reviewer</em></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="border-top: 3px solid var(--accent-success);">
+            <div class="card-title">Explicit Invocation</div>
+            <p class="card-text" style="margin-bottom: 12px;">You can explicitly request a specific sub-agent:</p>
+            <div class="chat-container">
+              <div class="chat-message user">
+                <div class="chat-avatar">👤</div>
+                <div class="chat-bubble">Use the debugger sub-agent to fix the login error</div>
+              </div>
+              <div class="chat-message ai">
+                <div class="chat-avatar">🤖</div>
+                <div class="chat-bubble">Using the debugger sub-agent to analyze...<br><br>✓ <em>Spawning debugger</em></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tip-box" style="margin-top: 16px;">
+            <span class="icon">💡</span>
+            <span class="text"><strong>Resume agents:</strong> Ask Claude to "continue that code review" to resume with full context preserved.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 45: Sub-Agent Patterns -->
+    <div class="slide" data-slide="45">
+      <span class="slide-tag">Patterns</span>
+      <h1 class="slide-title">Common Sub-Agent Patterns</h1>
+      <p class="slide-subtitle">Best practices for effective delegation</p>
+
+      <div class="content-grid" style="opacity: 0; animation: fadeInUp 0.5s 0.4s forwards;">
+        <div class="card">
+          <div class="card-icon" style="background: rgba(99, 102, 241, 0.1);">📦</div>
+          <div class="card-title">Isolate High-Volume Operations</div>
+          <p class="card-text">"Use a subagent to run the test suite and report only failing tests"<br><br>Verbose output stays in subagent context.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon" style="background: rgba(16, 185, 129, 0.1);">⚡</div>
+          <div class="card-title">Parallel Research</div>
+          <p class="card-text">"Research auth, database, and API modules in parallel using separate subagents"<br><br>Multiple investigations at once.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon" style="background: rgba(245, 158, 11, 0.1);">🔗</div>
+          <div class="card-title">Chain Subagents</div>
+          <p class="card-text">"Use code-reviewer to find issues, then optimizer to fix them"<br><br>Multi-step workflows with handoffs.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon" style="background: rgba(139, 92, 246, 0.1);">🎯</div>
+          <div class="card-title">Focused Specialists</div>
+          <p class="card-text">Create domain-specific agents: security-auditor, performance-optimizer, test-writer<br><br>Each excels at one task.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon" style="background: rgba(59, 130, 246, 0.1);">💰</div>
+          <div class="card-title">Cost Control</div>
+          <p class="card-text">Use Haiku for simple read-only tasks, Sonnet for analysis, Opus for complex reasoning.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon" style="background: rgba(239, 68, 68, 0.1);">🔒</div>
+          <div class="card-title">Safe Exploration</div>
+          <p class="card-text">Read-only subagents for codebase exploration prevent accidental modifications.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 46: When to Use Sub-Agents -->
+    <div class="slide" data-slide="46">
+      <span class="slide-tag">Best Practices</span>
+      <h1 class="slide-title">When to Use Sub-Agents</h1>
+      <p class="slide-subtitle">Match the right approach to the task</p>
+
+      <div class="two-col">
+        <div class="content-col">
+          <div class="card" style="border-top: 3px solid var(--accent-success);">
+            <div class="card-title" style="color: var(--accent-success);">✓ Use Sub-Agents When</div>
+            <ul class="feature-list" style="margin-top: 12px;">
+              <li><span class="icon check">✓</span> Task produces verbose output you don't need</li>
+              <li><span class="icon check">✓</span> You want to enforce specific tool restrictions</li>
+              <li><span class="icon check">✓</span> Work is self-contained and can return a summary</li>
+              <li><span class="icon check">✓</span> High-volume operations (tests, docs, logs)</li>
+              <li><span class="icon check">✓</span> Parallel research with independent investigations</li>
+              <li><span class="icon check">✓</span> Multi-step workflows that can be chained</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="border-top: 3px solid var(--accent-error);">
+            <div class="card-title" style="color: var(--accent-error);">✗ Use Main Conversation When</div>
+            <ul class="feature-list" style="margin-top: 12px;">
+              <li><span class="icon x">✗</span> Task needs frequent back-and-forth</li>
+              <li><span class="icon x">✗</span> Multiple phases share significant context</li>
+              <li><span class="icon x">✗</span> Making a quick, targeted change</li>
+              <li><span class="icon x">✗</span> Latency matters (subagents start fresh)</li>
+              <li><span class="icon x">✗</span> Iterative refinement needed</li>
+            </ul>
+          </div>
+
+          <div class="warning-box" style="margin-top: 16px;">
+            <span class="icon">⚠️</span>
+            <span class="text"><strong>Remember:</strong> Subagents cannot spawn other subagents. Chain them from main conversation.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 47: Sub-Agents Summary -->
+    <div class="slide" data-slide="47">
+      <span class="slide-tag">Summary</span>
+      <h1 class="slide-title">Sub-Agents Quick Reference</h1>
+      <p class="slide-subtitle">Everything you need to know at a glance</p>
+
+      <div class="two-col" style="opacity: 0; animation: fadeInUp 0.5s 0.4s forwards;">
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-number">KEY CONCEPTS</div>
+            <div style="margin-top: 16px; font-size: 14px;">
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span style="font-size: 20px;">📁</span>
+                <div>
+                  <div style="font-weight: 600;">Storage</div>
+                  <div style="color: var(--text-muted); font-size: 13px;">.claude/agents/ (project) or ~/.claude/agents/ (user)</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span style="font-size: 20px;">📝</span>
+                <div>
+                  <div style="font-weight: 600;">Format</div>
+                  <div style="color: var(--text-muted); font-size: 13px;">Markdown files with YAML frontmatter</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                <span style="font-size: 20px;">🤖</span>
+                <div>
+                  <div style="font-weight: 600;">Built-in</div>
+                  <div style="color: var(--text-muted); font-size: 13px;">Explore, Plan, General-purpose</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 0;">
+                <span style="font-size: 20px;">⚙️</span>
+                <div>
+                  <div style="font-weight: 600;">Models</div>
+                  <div style="color: var(--text-muted); font-size: 13px;">haiku (fast), sonnet (balanced), opus (powerful)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-col">
+          <div class="card" style="flex: 1;">
+            <div class="card-number">QUICK START</div>
+            <div class="step-list" style="margin-top: 12px;">
+              <div class="step-item" style="padding: 12px;">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Run /agents</h4>
+                  <p>Open the interactive agent manager</p>
+                </div>
+              </div>
+              <div class="step-item" style="padding: 12px;">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Create & Configure</h4>
+                  <p>Let Claude generate or build manually</p>
+                </div>
+              </div>
+              <div class="step-item" style="padding: 12px;">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Use in Prompts</h4>
+                  <p>"Use [agent-name] to..." or let Claude auto-delegate</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="highlight-box" style="margin-top: 16px;">
+            <div class="big-text" style="font-size: 20px;">docs.claude.com/sub-agents</div>
+            <div class="sub-text">Full documentation and examples</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 48: Thank You -->
+    <div class="slide title-slide" data-slide="48">
+      <span class="slide-tag">That's a Wrap!</span>
+      <h1 class="slide-title">Thank You!</h1>
+      <p class="slide-subtitle">Now go build something amazing</p>
+      <div style="display: flex; gap: 16px; justify-content: center; margin-top: 24px;">
+        <button class="cta-btn" onclick="goToSlide(1)" style="background: var(--bg-card); border: 1px solid var(--border); cursor: pointer;">
+          ← Back to Menu
+        </button>
+        <a href="https://cursor.com" target="_blank" class="cta-btn">
+          Get Cursor →
+        </a>
+      </div>
+      <div style="margin-top: 48px; color: var(--text-muted); font-size: 14px;">
+        Questions? Let's discuss!
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <button class="nav-btn" id="prevBtn" onclick="prevSlide()">←</button>
+    <div class="nav-progress"><span id="currentSlide">1</span> / <span id="totalSlides">48</span></div>
+    <button class="nav-btn" id="nextBtn" onclick="nextSlide()">→</button>
+  </nav>
+
+  <div class="keyboard-hint">
+    <span class="key">←</span> <span class="key">→</span> to navigate
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = document.querySelectorAll('.slide').length;
+
+    document.getElementById('totalSlides').textContent = totalSlides;
+    updateProgress();
+
+    function showSlide(n) {
+      const slides = document.querySelectorAll('.slide');
+
+      if (n > totalSlides) currentSlide = 1;
+      if (n < 1) currentSlide = totalSlides;
+
+      slides.forEach((slide, index) => {
+        slide.classList.remove('active', 'prev');
+        if (index + 1 < currentSlide) {
+          slide.classList.add('prev');
+        }
+      });
+
+      slides[currentSlide - 1].classList.add('active');
+      document.getElementById('currentSlide').textContent = currentSlide;
+      updateProgress();
+      updateNavButtons();
+    }
+
+    function nextSlide() {
+      currentSlide++;
+      showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+      currentSlide--;
+      showSlide(currentSlide);
+    }
+
+    function goToSlide(n) {
+      currentSlide = n;
+      showSlide(currentSlide);
+    }
+
+    function updateProgress() {
+      const progress = (currentSlide / totalSlides) * 100;
+      document.getElementById('progressBar').style.width = progress + '%';
+    }
+
+    function updateNavButtons() {
+      document.getElementById('prevBtn').disabled = currentSlide === 1;
+      document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevSlide();
+      }
+    });
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+
+    function handleSwipe() {
+      const threshold = 50;
+      if (touchEndX < touchStartX - threshold) nextSlide();
+      if (touchEndX > touchStartX + threshold) prevSlide();
+    }
+
+    updateNavButtons();
+  </script>
+</body>
+</html>
