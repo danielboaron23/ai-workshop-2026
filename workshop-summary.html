@@ -213,20 +213,23 @@
 
     .tab-btn {
       flex: 1;
-      padding: 16px 24px;
+      min-width: 0;
+      padding: 16px 12px;
       background: transparent;
       border: none;
       border-radius: 12px;
       color: var(--text-secondary);
       font-family: 'Heebo', sans-serif;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
+      text-align: center;
     }
 
     .tab-btn:hover {
@@ -745,7 +748,7 @@
       </button>
       <button class="tab-btn" onclick="switchTab('skills')">
         <span class="tab-icon">⚡</span>
-        <span data-i18n="tabSkills">Claude Skills</span>
+        <span data-i18n="tabSkills">Claude Skills (יכולות)</span>
       </button>
     </div>
 
@@ -864,13 +867,13 @@
           <div class="tool-expanded">
             <div class="tool-expanded-inner">
               <div class="tool-section">
-                <div class="tool-section-title">איך ליצור GPT מותאם</div>
+                <div class="tool-section-title" data-i18n="howToCreateGPT">איך ליצור GPT מותאם</div>
                 <ul class="tool-features">
-                  <li>נכנסים ל-ChatGPT → Explore GPTs → Create</li>
-                  <li>מגדירים את ההתנהגות והסגנון הרצוי</li>
-                  <li>מעלים Knowledge Base (ZIP עם קבצי ייחוס)</li>
-                  <li>מכבים Web Search אם רוצים רק מידע פנימי</li>
-                  <li>משתפים עם הצוות או שומרים לשימוש אישי</li>
+                  <li><span data-i18n="gptStep1">נכנסים ל-ChatGPT → Explore GPTs → Create</span></li>
+                  <li><span data-i18n="gptStep2">מגדירים את ההתנהגות והסגנון הרצוי</span></li>
+                  <li><span data-i18n="gptStep3">מעלים Knowledge Base (ZIP עם קבצי ייחוס)</span></li>
+                  <li><span data-i18n="gptStep4">מכבים Web Search אם רוצים רק מידע פנימי</span></li>
+                  <li><span data-i18n="gptStep5">משתפים עם הצוות או שומרים לשימוש אישי</span></li>
                 </ul>
               </div>
               <div class="tool-section">
@@ -904,13 +907,13 @@
           <div class="tool-expanded">
             <div class="tool-expanded-inner">
               <div class="tool-section">
-                <div class="tool-section-title">איך ליצור Skill</div>
+                <div class="tool-section-title" data-i18n="howToCreateSkill">איך ליצור Skill</div>
                 <ul class="tool-features">
-                  <li>אומרים ל-Claude "בוא נבנה skill ש..."</li>
-                  <li>Claude יוצר קובץ SKILL.md עם הוראות</li>
-                  <li>אפשר להוסיף קבצים נוספים לדוגמאות</li>
-                  <li>מעלים ב-Settings → Skills → Upload</li>
-                  <li>Claude מזהה אוטומטית מתי להשתמש</li>
+                  <li><span data-i18n="skillStep1">אומרים ל-Claude "בוא נבנה skill ש..."</span></li>
+                  <li><span data-i18n="skillStep2">Claude יוצר קובץ SKILL.md עם הוראות</span></li>
+                  <li><span data-i18n="skillStep3">אפשר להוסיף קבצים נוספים לדוגמאות</span></li>
+                  <li><span data-i18n="skillStep4">מעלים ב-Settings → Skills → Upload</span></li>
+                  <li><span data-i18n="skillStep5">Claude מזהה אוטומטית מתי להשתמש</span></li>
                 </ul>
               </div>
               <div class="tool-section">
@@ -1463,21 +1466,21 @@
           <div class="tool-expanded">
             <div class="tool-expanded-inner">
               <div class="tool-section">
-                <div class="tool-section-title">מאפיינים עיקריים</div>
+                <div class="tool-section-title" data-i18n="keyFeatures">מאפיינים עיקריים</div>
                 <ul class="tool-features">
-                  <li><strong>Markdown-based:</strong> קבצי Markdown שמלמדים את Claude תהליכי עבודה ספציפיים</li>
-                  <li><strong>Reusable:</strong> יוצרים פעם אחת, משתמשים אוטומטית בכל שיחה רלוונטית</li>
-                  <li><strong>Progressive Loading:</strong> מידע נטען בשלבים לפי הצורך, לא הכל בבת אחת</li>
-                  <li><strong>Domain-Specific:</strong> הופכים את Claude מעוזר כללי למומחה בתחום</li>
+                  <li><strong>Markdown-based:</strong> <span data-i18n="featureMarkdown">קבצי Markdown שמלמדים את Claude תהליכי עבודה ספציפיים</span></li>
+                  <li><strong>Reusable:</strong> <span data-i18n="featureReusable">יוצרים פעם אחת, משתמשים אוטומטית בכל שיחה רלוונטית</span></li>
+                  <li><strong>Progressive Loading:</strong> <span data-i18n="featureProgressive">מידע נטען בשלבים לפי הצורך, לא הכל בבת אחת</span></li>
+                  <li><strong>Domain-Specific:</strong> <span data-i18n="featureDomain">הופכים את Claude מעוזר כללי למומחה בתחום</span></li>
                 </ul>
               </div>
               <div class="tool-section">
-                <div class="tool-section-title">למה להשתמש ב-Skills?</div>
+                <div class="tool-section-title" data-i18n="whyUseSkills">למה להשתמש ב-Skills?</div>
                 <div class="tool-use-cases">
-                  <span class="use-case-tag">התמחות בתחום</span>
-                  <span class="use-case-tag">הפחתת חזרות</span>
-                  <span class="use-case-tag">שילוב יכולות</span>
-                  <span class="use-case-tag">עקביות</span>
+                  <span class="use-case-tag" data-i18n="skillsExpertise">התמחות בתחום</span>
+                  <span class="use-case-tag" data-i18n="skillsRepetition">הפחתת חזרות</span>
+                  <span class="use-case-tag" data-i18n="skillsCombine">שילוב יכולות</span>
+                  <span class="use-case-tag" data-i18n="skillsConsistency">עקביות</span>
                 </div>
               </div>
             </div>
@@ -1495,7 +1498,7 @@
           <div class="tool-expanded">
             <div class="tool-expanded-inner">
               <div class="tool-section">
-                <div class="tool-section-title">מבנה בסיסי</div>
+                <div class="tool-section-title" data-i18n="basicStructure">מבנה בסיסי</div>
                 <div class="code-block">
 <pre style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-secondary); overflow-x: auto; direction: ltr; text-align: left;">
 your-skill/
@@ -1504,7 +1507,7 @@ your-skill/
                 </div>
               </div>
               <div class="tool-section">
-                <div class="tool-section-title">מבנה מתקדם</div>
+                <div class="tool-section-title" data-i18n="advancedStructure">מבנה מתקדם</div>
                 <div class="code-block">
 <pre style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-secondary); overflow-x: auto; direction: ltr; text-align: left;">
 figma-make-skill/
@@ -1537,7 +1540,7 @@ figma-make-skill/
           <div class="tool-expanded">
             <div class="tool-expanded-inner">
               <div class="tool-section">
-                <div class="tool-section-title">תבנית בסיסית</div>
+                <div class="tool-section-title" data-i18n="basicTemplate">תבנית בסיסית</div>
                 <div class="code-block">
 <pre style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-secondary); overflow-x: auto; direction: ltr; text-align: left;">
 ---
@@ -1557,11 +1560,11 @@ Skill does and when to use it
                 </div>
               </div>
               <div class="tool-section">
-                <div class="tool-section-title">חוקי שמות</div>
+                <div class="tool-section-title" data-i18n="namingRules">חוקי שמות</div>
                 <ul class="tool-features">
-                  <li>מקסימום 64 תווים</li>
-                  <li>רק אותיות קטנות, מספרים ומקפים</li>
-                  <li>השתמשו בפועל+ing: <code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px;">processing-pdfs</code>, <code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px;">creating-prompts</code></li>
+                  <li><span data-i18n="maxChars">מקסימום 64 תווים</span></li>
+                  <li><span data-i18n="lowercase">רק אותיות קטנות, מספרים ומקפים</span></li>
+                  <li><span data-i18n="verbForm">השתמשו בפועל+ing:</span> <code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px;">processing-pdfs</code>, <code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px;">creating-prompts</code></li>
                 </ul>
               </div>
             </div>
@@ -1579,19 +1582,19 @@ Skill does and when to use it
           <div class="tool-expanded">
             <div class="tool-expanded-inner">
               <div class="tool-section">
-                <div class="tool-section-title">Claude Code (מומלץ)</div>
+                <div class="tool-section-title" data-i18n="claudeCode">Claude Code <span data-i18n="recommended">(מומלץ)</span></div>
                 <ul class="tool-features">
-                  <li><strong>אישי:</strong> <code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px;">~/.claude/skills/</code> - זמין לכם בכל הפרויקטים</li>
-                  <li><strong>פרויקט:</strong> <code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px;">.claude/skills/</code> - זמין לכל מי שעובד על הפרויקט</li>
-                  <li>Claude מזהה אוטומטית Skills בתיקיות אלה</li>
+                  <li><strong><span data-i18n="personal">אישי:</span></strong> <code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px;">~/.claude/skills/</code> - <span data-i18n="personalDesc">זמין לכם בכל הפרויקטים</span></li>
+                  <li><strong><span data-i18n="project">פרויקט:</span></strong> <code style="background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px;">.claude/skills/</code> - <span data-i18n="projectDesc">זמין לכל מי שעובד על הפרויקט</span></li>
+                  <li><span data-i18n="autoDetect">Claude מזהה אוטומטית Skills בתיקיות אלה</span></li>
                 </ul>
               </div>
               <div class="tool-section">
                 <div class="tool-section-title">Claude.ai</div>
                 <ul class="tool-features">
-                  <li>Settings → Features</li>
-                  <li>העלאת Skills כקבצי ZIP</li>
-                  <li>זמין ל-Pro, Max, Team, Enterprise</li>
+                  <li><span data-i18n="settingsFeatures">Settings → Features</span></li>
+                  <li><span data-i18n="uploadZip">העלאת Skills כקבצי ZIP</span></li>
+                  <li><span data-i18n="availablePlans">זמין ל-Pro, Max, Team, Enterprise</span></li>
                 </ul>
               </div>
               <div class="tool-section">
@@ -1623,33 +1626,33 @@ Skill does and when to use it
           <div class="tool-expanded">
             <div class="tool-expanded-inner">
               <div class="tool-section">
-                <div class="tool-section-title">מה ה-Skill עושה</div>
+                <div class="tool-section-title" data-i18n="whatSkillDoes">מה ה-Skill עושה</div>
                 <ul class="tool-features">
-                  <li>מייצר פרומפטים מותאמים ל-Figma Make</li>
-                  <li>מיישם את שיטת 3C's אוטומטית (Clarity, Context, Constraints)</li>
-                  <li>מתאים את הפרומפט לסוג המשימה (UI, אנימציה, תוכן)</li>
-                  <li>כולל best practices לתוצאות טובות יותר</li>
-                  <li>מציע וריאציות ושיפורים לפרומפט</li>
+                  <li><span data-i18n="promptterFeature1">מייצר פרומפטים מותאמים ל-Figma Make</span></li>
+                  <li><span data-i18n="promptterFeature2">מיישם את שיטת 3C's אוטומטית (Clarity, Context, Constraints)</span></li>
+                  <li><span data-i18n="promptterFeature3">מתאים את הפרומפט לסוג המשימה (UI, אנימציה, תוכן)</span></li>
+                  <li><span data-i18n="promptterFeature4">כולל best practices לתוצאות טובות יותר</span></li>
+                  <li><span data-i18n="promptterFeature5">מציע וריאציות ושיפורים לפרומפט</span></li>
                 </ul>
               </div>
               <div class="tool-section">
-                <div class="tool-section-title">דוגמת שימוש</div>
+                <div class="tool-section-title" data-i18n="usageExample">דוגמת שימוש</div>
                 <div class="tool-tip" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(99, 102, 241, 0.05)); border-color: rgba(99, 102, 241, 0.2);">
                   <span class="tool-tip-icon">💬</span>
-                  <span><strong>אתם:</strong> "אני צריך דף התחברות לאפליקציית בריאות"<br><br><strong>Claude (עם ה-Skill):</strong> "הנה פרומפט מותאם ל-Figma Make:<br><em>Create a login screen for a health app. Include email and password fields, a 'Forgot password' link, social login options (Google, Apple), and a registration CTA. Use a calming color palette with soft blues and greens. Mobile-first design, 375px width.</em>"</span>
+                  <span><strong><span data-i18n="you">אתם:</span></strong> <span data-i18n="userRequest">"אני צריך דף התחברות לאפליקציית בריאות"</span><br><br><strong><span data-i18n="claudeWithSkill">Claude (עם ה-Skill):</span></strong> <span data-i18n="claudeResponse">"הנה פרומפט מותאם ל-Figma Make:</span><br><em>Create a login screen for a health app. Include email and password fields, a 'Forgot password' link, social login options (Google, Apple), and a registration CTA. Use a calming color palette with soft blues and greens. Mobile-first design, 375px width.</em>"</span>
                 </div>
               </div>
               <div class="tool-section">
-                <div class="tool-section-title">מתי להשתמש</div>
+                <div class="tool-section-title" data-i18n="whenToUse">מתי להשתמש</div>
                 <div class="tool-use-cases">
-                  <span class="use-case-tag">יצירת מסכים חדשים</span>
-                  <span class="use-case-tag">עיצוב קומפוננטות</span>
-                  <span class="use-case-tag">פרוטוטייפים מהירים</span>
-                  <span class="use-case-tag">אקספלורציה</span>
+                  <span class="use-case-tag" data-i18n="newScreens">יצירת מסכים חדשים</span>
+                  <span class="use-case-tag" data-i18n="designComponents">עיצוב קומפוננטות</span>
+                  <span class="use-case-tag" data-i18n="quickProto">פרוטוטייפים מהירים</span>
+                  <span class="use-case-tag" data-i18n="exploration">אקספלורציה</span>
                 </div>
               </div>
               <div class="tool-section">
-                <div class="tool-section-title">קוד ה-Skill</div>
+                <div class="tool-section-title" data-i18n="skillCode">קוד ה-Skill</div>
                 <div class="code-block">
 <pre style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-secondary); overflow-x: auto; direction: ltr; text-align: left; max-height: 300px;">
 ---
@@ -1733,34 +1736,34 @@ Mobile-first, 375px width."
           <div class="tool-expanded">
             <div class="tool-expanded-inner">
               <div class="tool-section">
-                <div class="tool-section-title">מה ה-Skill עושה</div>
+                <div class="tool-section-title" data-i18n="whatSkillDoes">מה ה-Skill עושה</div>
                 <ul class="tool-features">
-                  <li>מספק הנחיות לעבודה אפקטיבית עם Figma Make</li>
-                  <li>כולל טיפים לשיפור תוצאות</li>
-                  <li>מסביר מגבלות ואיך לעקוף אותן</li>
-                  <li>מציע תהליך עבודה מומלץ</li>
-                  <li>כולל דוגמאות של Do's ו-Don'ts</li>
+                  <li><span data-i18n="guidelinesFeature1">מספק הנחיות לעבודה אפקטיבית עם Figma Make</span></li>
+                  <li><span data-i18n="guidelinesFeature2">כולל טיפים לשיפור תוצאות</span></li>
+                  <li><span data-i18n="guidelinesFeature3">מסביר מגבלות ואיך לעקוף אותן</span></li>
+                  <li><span data-i18n="guidelinesFeature4">מציע תהליך עבודה מומלץ</span></li>
+                  <li><span data-i18n="guidelinesFeature5">כולל דוגמאות של Do's ו-Don'ts</span></li>
                 </ul>
               </div>
               <div class="tool-section">
-                <div class="tool-section-title">עקרונות מפתח</div>
+                <div class="tool-section-title" data-i18n="keyPrinciples">עקרונות מפתח</div>
                 <div class="tips-grid" style="margin-top: 12px;">
                   <div class="tip-item" style="padding: 12px;">
-                    <div class="tip-title" style="font-size: 11px;">תכנון מראש</div>
-                    <div class="tip-text" style="font-size: 11px;">תכננו את ה-Flow לפני שמתחילים</div>
+                    <div class="tip-title" style="font-size: 11px;" data-i18n="planAhead">תכנון מראש</div>
+                    <div class="tip-text" style="font-size: 11px;" data-i18n="planAheadDesc">תכננו את ה-Flow לפני שמתחילים</div>
                   </div>
                   <div class="tip-item" style="padding: 12px;">
-                    <div class="tip-title" style="font-size: 11px;">צעד אחר צעד</div>
-                    <div class="tip-text" style="font-size: 11px;">שנו דבר אחד בכל פעם</div>
+                    <div class="tip-title" style="font-size: 11px;" data-i18n="stepByStep">צעד אחר צעד</div>
+                    <div class="tip-text" style="font-size: 11px;" data-i18n="stepByStepDesc">שנו דבר אחד בכל פעם</div>
                   </div>
                   <div class="tip-item" style="padding: 12px;">
-                    <div class="tip-title" style="font-size: 11px;">Point & Edit</div>
-                    <div class="tip-text" style="font-size: 11px;">לשינויים נקודתיים מהירים</div>
+                    <div class="tip-title" style="font-size: 11px;" data-i18n="pointEdit">Point & Edit</div>
+                    <div class="tip-text" style="font-size: 11px;" data-i18n="pointEditDesc">לשינויים נקודתיים מהירים</div>
                   </div>
                 </div>
               </div>
               <div class="tool-section">
-                <div class="tool-section-title">קוד ה-Skill</div>
+                <div class="tool-section-title" data-i18n="skillCode">קוד ה-Skill</div>
                 <div class="code-block">
 <pre style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-secondary); overflow-x: auto; direction: ltr; text-align: left; max-height: 300px;">
 ---
@@ -2075,7 +2078,7 @@ workflow or troubleshoot issues.
         tabSummary: 'סיכום הסדנא',
         tabDownload: 'הורדת מצגת',
         tabCursor: 'הסבר על Cursor',
-        tabSkills: 'Claude Skills',
+        tabSkills: 'Claude Skills (יכולות)',
 
         // Summary Tab - Intro
         introTitle: 'שמירה על המומנטום',
@@ -2170,6 +2173,102 @@ workflow or troubleshoot issues.
         testIterate: 'Test & Iterate',
         testIterateDesc: 'בדקו את ה-Skill עם תרחישים אמיתיים ושפרו לפי התוצאות',
 
+        // GPT Creation
+        howToCreateGPT: 'How to Create a Custom GPT',
+        gptStep1: 'Go to ChatGPT → Explore GPTs → Create',
+        gptStep2: 'Define the behavior and style you want',
+        gptStep3: 'Upload Knowledge Base (ZIP with reference files)',
+        gptStep4: 'Turn off Web Search if you want only internal info',
+        gptStep5: 'Share with team or save for personal use',
+
+        // Skills
+        howToCreateSkill: 'How to Create a Skill',
+        skillStep1: 'Tell Claude "let\'s build a skill that..."',
+        skillStep2: 'Claude creates a SKILL.md file with instructions',
+        skillStep3: 'You can add additional files for examples',
+        skillStep4: 'Upload via Settings → Skills → Upload',
+        skillStep5: 'Claude automatically detects when to use it',
+
+        // Skills Capabilities
+        keyFeatures: 'Key Features',
+        featureMarkdown: 'Markdown files that teach Claude specific workflows',
+        featureReusable: 'Create once, use automatically in relevant conversations',
+        featureProgressive: 'Information loads in stages as needed, not all at once',
+        featureDomain: 'Turn Claude from a general assistant to a domain expert',
+
+        // Skills Usage
+        whyUseSkills: 'Why use Skills?',
+        skillsExpertise: 'Domain expertise',
+        skillsRepetition: 'Reduce repetition',
+        skillsCombine: 'Combine abilities',
+        skillsConsistency: 'Consistency',
+
+        // File Structure
+        basicStructure: 'Basic Structure',
+        advancedStructure: 'Advanced Structure',
+
+        // Template
+        basicTemplate: 'Basic Template',
+
+        // Naming Rules
+        namingRules: 'Naming Rules',
+        maxChars: 'Maximum 64 characters',
+        lowercase: 'Only lowercase letters, numbers and hyphens',
+        verbForm: 'Use verb+ing format:',
+
+        // Installation
+        claudeCode: 'Claude Code',
+        recommended: '(Recommended)',
+        personal: 'Personal:',
+        personalDesc: 'Available to you across all projects',
+        project: 'Project:',
+        projectDesc: 'Available to everyone working on the project',
+        autoDetect: 'Claude automatically detects Skills in these folders',
+        settingsFeatures: 'Settings → Features',
+        uploadZip: 'Upload Skills as ZIP files',
+        availablePlans: 'Available for Pro, Max, Team, Enterprise',
+
+        // Prompter Skill
+        whatSkillDoes: 'What the Skill Does',
+        promptterFeature1: 'Generates customized Figma Make prompts',
+        promptterFeature2: 'Implements 3C\'s methodology automatically (Clarity, Context, Constraints)',
+        promptterFeature3: 'Adapts the prompt to the task type (UI, animation, content)',
+        promptterFeature4: 'Includes best practices for better results',
+        promptterFeature5: 'Suggests variations and improvements to the prompt',
+
+        // Usage Example
+        usageExample: 'Usage Example',
+        you: 'You:',
+        userRequest: '"I need a login page for a health app"',
+        claudeWithSkill: 'Claude (with the Skill):',
+        claudeResponse: '"Here\'s the customized Figma Make prompt:',
+
+        // When to Use
+        whenToUse: 'When to Use',
+        newScreens: 'Creating new screens',
+        designComponents: 'Designing components',
+        quickProto: 'Quick prototypes',
+        exploration: 'Exploration',
+
+        // Code
+        skillCode: 'Skill Code',
+
+        // Guidelines
+        guidelinesFeature1: 'Provides guidelines for effective Figma Make work',
+        guidelinesFeature2: 'Includes tips to improve results',
+        guidelinesFeature3: 'Explains limitations and how to work around them',
+        guidelinesFeature4: 'Recommends a workflow',
+        guidelinesFeature5: 'Includes Do\'s and Don\'ts examples',
+
+        // Principles
+        keyPrinciples: 'Key Principles',
+        planAhead: 'Plan Ahead',
+        planAheadDesc: 'Plan your Flow before starting',
+        stepByStep: 'Step by Step',
+        stepByStepDesc: 'Change one thing at a time',
+        pointEdit: 'Point & Edit',
+        pointEditDesc: 'Quick targeted changes',
+
         // Footer
         footer: 'AI Workshop 2026 • תודה שהשתתפתם!'
       },
@@ -2183,7 +2282,7 @@ workflow or troubleshoot issues.
         tabSummary: 'Workshop Summary',
         tabDownload: 'Download Presentation',
         tabCursor: 'About Cursor',
-        tabSkills: 'Claude Skills',
+        tabSkills: 'Claude Skills (Abilities)',
 
         // Summary Tab - Intro
         introTitle: 'Keep the Momentum',
@@ -2277,6 +2376,102 @@ workflow or troubleshoot issues.
         testIterate: 'Test & Iterate',
         testIterateDesc: 'Test the Skill with real scenarios and improve based on results',
 
+        // GPT Creation
+        howToCreateGPT: 'How to Create a Custom GPT',
+        gptStep1: 'Go to ChatGPT → Explore GPTs → Create',
+        gptStep2: 'Define the behavior and style you want',
+        gptStep3: 'Upload Knowledge Base (ZIP with reference files)',
+        gptStep4: 'Turn off Web Search if you want only internal info',
+        gptStep5: 'Share with team or save for personal use',
+
+        // Skills
+        howToCreateSkill: 'How to Create a Skill',
+        skillStep1: 'Tell Claude "let\'s build a skill that..."',
+        skillStep2: 'Claude creates a SKILL.md file with instructions',
+        skillStep3: 'You can add additional files for examples',
+        skillStep4: 'Upload via Settings → Skills → Upload',
+        skillStep5: 'Claude automatically detects when to use it',
+
+        // Skills Capabilities
+        keyFeatures: 'Key Features',
+        featureMarkdown: 'Markdown files that teach Claude specific workflows',
+        featureReusable: 'Create once, use automatically in relevant conversations',
+        featureProgressive: 'Information loads in stages as needed, not all at once',
+        featureDomain: 'Turn Claude from a general assistant to a domain expert',
+
+        // Skills Usage
+        whyUseSkills: 'Why use Skills?',
+        skillsExpertise: 'Domain expertise',
+        skillsRepetition: 'Reduce repetition',
+        skillsCombine: 'Combine abilities',
+        skillsConsistency: 'Consistency',
+
+        // File Structure
+        basicStructure: 'Basic Structure',
+        advancedStructure: 'Advanced Structure',
+
+        // Template
+        basicTemplate: 'Basic Template',
+
+        // Naming Rules
+        namingRules: 'Naming Rules',
+        maxChars: 'Maximum 64 characters',
+        lowercase: 'Only lowercase letters, numbers and hyphens',
+        verbForm: 'Use verb+ing format:',
+
+        // Installation
+        claudeCode: 'Claude Code',
+        recommended: '(Recommended)',
+        personal: 'Personal:',
+        personalDesc: 'Available to you across all projects',
+        project: 'Project:',
+        projectDesc: 'Available to everyone working on the project',
+        autoDetect: 'Claude automatically detects Skills in these folders',
+        settingsFeatures: 'Settings → Features',
+        uploadZip: 'Upload Skills as ZIP files',
+        availablePlans: 'Available for Pro, Max, Team, Enterprise',
+
+        // Prompter Skill
+        whatSkillDoes: 'What the Skill Does',
+        promptterFeature1: 'Generates customized Figma Make prompts',
+        promptterFeature2: 'Implements 3C\'s methodology automatically (Clarity, Context, Constraints)',
+        promptterFeature3: 'Adapts the prompt to the task type (UI, animation, content)',
+        promptterFeature4: 'Includes best practices for better results',
+        promptterFeature5: 'Suggests variations and improvements to the prompt',
+
+        // Usage Example
+        usageExample: 'Usage Example',
+        you: 'You:',
+        userRequest: '"I need a login page for a health app"',
+        claudeWithSkill: 'Claude (with the Skill):',
+        claudeResponse: '"Here\'s the customized Figma Make prompt:',
+
+        // When to Use
+        whenToUse: 'When to Use',
+        newScreens: 'Creating new screens',
+        designComponents: 'Designing components',
+        quickProto: 'Quick prototypes',
+        exploration: 'Exploration',
+
+        // Code
+        skillCode: 'Skill Code',
+
+        // Guidelines
+        guidelinesFeature1: 'Provides guidelines for effective Figma Make work',
+        guidelinesFeature2: 'Includes tips to improve results',
+        guidelinesFeature3: 'Explains limitations and how to work around them',
+        guidelinesFeature4: 'Recommends a workflow',
+        guidelinesFeature5: 'Includes Do\'s and Don\'ts examples',
+
+        // Principles
+        keyPrinciples: 'Key Principles',
+        planAhead: 'Plan Ahead',
+        planAheadDesc: 'Plan your Flow before starting',
+        stepByStep: 'Step by Step',
+        stepByStepDesc: 'Change one thing at a time',
+        pointEdit: 'Point & Edit',
+        pointEditDesc: 'Quick targeted changes',
+
         // Footer
         footer: 'AI Workshop 2026 • Thank you for participating!'
       }
@@ -2314,10 +2509,14 @@ workflow or troubleshoot issues.
 
     // Initialize language from localStorage or default to Hebrew
     document.addEventListener('DOMContentLoaded', () => {
+      // Get saved language preference
       const savedLang = localStorage.getItem('preferredLang') || 'he';
-      if (savedLang !== 'he') {
-        setLanguage(savedLang);
-      }
+      
+      // Ensure language is valid
+      const validLang = (savedLang === 'en') ? 'en' : 'he';
+      
+      // Initialize with the saved or default language
+      setLanguage(validLang);
     });
   </script>
 </body>
