@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>איך אני בונה מוצרים עם AI – תהליך עבודה מעשי</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f0f12;
+            --bg-secondary: #16161a;
+            --bg-card: #1c1c22;
+            --bg-card-hover: #242430;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-error: #ef4444;
+            --accent-info: #3b82f6;
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --border: #27272a;
+            --border-light: #3f3f46;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 1px 1px, var(--border) 1px, transparent 0);
+            background-size: 40px 40px;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Language Toggle */
+        .lang-toggle {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+            background: var(--bg-card);
+            padding: 6px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+        }
+
+        [dir="ltr"] .lang-toggle {
+            left: auto;
+            right: 24px;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .lang-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-card-hover);
+        }
+
+        .lang-btn.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 80px 0 20px;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--accent-primary);
+        }
+
+        [dir="ltr"] .back-link {
+            flex-direction: row;
+        }
+
+        [dir="rtl"] .back-link .arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Wavy Header */
+        .wavy-header {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 48px;
+        }
+
+        #wavy-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .header {
+            position: relative;
+            z-index: 2;
+            padding: 60px 48px;
+            text-align: center;
+        }
+
+        .header-tag {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--accent-primary);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .header-title {
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content Sections */
+        .section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 36px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            border-color: var(--border-light);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .section-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .section-number.start {
+            background: var(--accent-warning);
+        }
+
+        .section-number.loop {
+            background: var(--accent-success);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .section-content {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .section-content p {
+            margin-bottom: 16px;
+        }
+
+        .section-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Bullet Lists */
+        .bullet-list {
+            list-style: none;
+            margin: 16px 0;
+        }
+
+        .bullet-list li {
+            position: relative;
+            padding-right: 24px;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        [dir="ltr"] .bullet-list li {
+            padding-right: 0;
+            padding-left: 24px;
+        }
+
+        .bullet-list li::before {
+            content: "→";
+            position: absolute;
+            right: 0;
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+
+        [dir="ltr"] .bullet-list li::before {
+            right: auto;
+            left: 0;
+        }
+
+        /* Quote Block */
+        .quote-block {
+            background: rgba(99, 102, 241, 0.08);
+            border-right: 3px solid var(--accent-primary);
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 0 12px 12px 0;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        [dir="ltr"] .quote-block {
+            border-right: none;
+            border-left: 3px solid var(--accent-primary);
+            border-radius: 12px 0 0 12px;
+        }
+
+        /* Flow Diagram */
+        .flow-diagram {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 36px;
+            margin-bottom: 24px;
+        }
+
+        .flow-diagram-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .flow-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .flow-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .flow-item:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .flow-item.highlight {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .flow-arrow {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
+        .flow-loop {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed var(--border);
+        }
+
+        .flow-loop-text {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-success);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        /* Intro Section */
+        .intro-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 36px;
+            margin-bottom: 32px;
+        }
+
+        .intro-text {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .intro-text strong {
+            color: var(--text-primary);
+        }
+
+        .emphasis-box {
+            background: rgba(139, 92, 246, 0.08);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .emphasis-text {
+            color: var(--accent-secondary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 48px 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .header {
+                padding: 40px 24px;
+            }
+
+            .header-title {
+                font-size: 1.8rem;
+            }
+
+            .section {
+                padding: 24px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .flow-row {
+                flex-direction: column;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+
+            .lang-toggle {
+                top: 16px;
+                left: 16px;
+            }
+
+            [dir="ltr"] .lang-toggle {
+                right: 16px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.15s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.25s; }
+        .section:nth-child(5) { animation-delay: 0.3s; }
+        .section:nth-child(6) { animation-delay: 0.35s; }
+        .section:nth-child(7) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <!-- Language Toggle -->
+    <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLanguage('he')" data-lang="he">עב</button>
+        <button class="lang-btn" onclick="setLanguage('en')" data-lang="en">EN</button>
+    </div>
+
+    <div class="container">
+        <!-- Back Link -->
+        <a href="workshop-summary.html" class="back-link">
+            <span class="arrow">←</span>
+            <span data-i18n="backToWorkshop">חזרה לסיכום הסדנא</span>
+        </a>
+
+        <!-- Header -->
+        <div class="wavy-header">
+            <canvas id="wavy-canvas"></canvas>
+            <header class="header">
+                <span class="header-tag" data-i18n="headerTag">תהליך עבודה</span>
+                <h1 class="header-title" data-i18n="headerTitle">איך אני בונה מוצרים עם AI</h1>
+                <p class="header-subtitle" data-i18n="headerSubtitle">תהליך עבודה מעשי – מבקשת פיצ'ר ועד מוצר עובד</p>
+            </header>
+        </div>
+
+        <!-- Intro Section -->
+        <div class="intro-section">
+            <p class="intro-text" data-i18n="introText">
+                זה לא קסם ולא הימור על כלים חדשים. זו <strong>שיטת עבודה</strong> – תהליך חשיבה מובנה שמשתמש ב-AI בכל שלב, מהרגע שמגיעה בקשה ועד שמגיע מוצר עובד. העמוד הזה מציג את התהליך שלב אחרי שלב.
+            </p>
+            <div class="emphasis-box">
+                <span class="emphasis-text" data-i18n="emphasisText">זו לא קפיצה אקראית בין כלים – זו מערכת חשיבה.</span>
+            </div>
+        </div>
+
+        <!-- Flow Diagram -->
+        <div class="flow-diagram">
+            <h3 class="flow-diagram-title" data-i18n="flowTitle">סקירת התהליך</h3>
+            <div class="flow-container">
+                <div class="flow-row">
+                    <div class="flow-item" data-i18n="flowPrd">📄 PRD / בקשה</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item highlight" data-i18n="flowBrain">🧠 AI Brain</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item" data-i18n="flowResearch">🔍 מחקר</div>
+                </div>
+                <div class="flow-row">
+                    <span class="flow-arrow" style="transform: rotate(90deg);">→</span>
+                </div>
+                <div class="flow-row">
+                    <div class="flow-item" data-i18n="flowProduct">🚀 מוצר</div>
+                    <span class="flow-arrow">←</span>
+                    <div class="flow-item" data-i18n="flowCursor">⌨️ Cursor</div>
+                    <span class="flow-arrow">←</span>
+                    <div class="flow-item" data-i18n="flowFigma">🎨 Figma Make</div>
+                    <span class="flow-arrow">←</span>
+                    <div class="flow-item" data-i18n="flowIdeation">💡 אידיאציה</div>
+                </div>
+                <div class="flow-loop">
+                    <span class="flow-loop-text" data-i18n="flowLoopText">↻ לולאה חוזרת – לא תהליך ליניארי</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Starting Point -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number start">0</div>
+                <div>
+                    <h2 class="section-title" data-i18n="startTitle">נקודת ההתחלה – הקלט</h2>
+                    <span class="section-subtitle" data-i18n="startSubtitle">The Raw Problem</span>
+                </div>
+            </div>
+            <div class="section-content">
+                <p data-i18n="startContent1">כל תהליך מתחיל ממשהו. זה יכול להיות:</p>
+                <ul class="bullet-list">
+                    <li data-i18n="startItem1">בקשת פיצ'ר מלקוח או מהצוות</li>
+                    <li data-i18n="startItem2">מסמך PRD (Product Requirements Document)</li>
+                    <li data-i18n="startItem3">בעיה עסקית שצריך לפתור</li>
+                    <li data-i18n="startItem4">תלונת לקוח או משוב משתמשים</li>
+                </ul>
+                <p data-i18n="startContent2">אני קורא לזה <strong>"הבעיה הגולמית"</strong> – החומר הגולמי שממנו מתחילים לבנות.</p>
+            </div>
+        </div>
+
+        <!-- Stage 1: AI Brain -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <div>
+                    <h2 class="section-title" data-i18n="stage1Title">מוח ה-AI למוצר</h2>
+                    <span class="section-subtitle" data-i18n="stage1Subtitle">The AI Product Brain</span>
+                </div>
+            </div>
+            <div class="section-content">
+                <p data-i18n="stage1Content1">לפני שמתחילים לעצב משהו, אני מפעיל <strong>עוזרי AI (GPTs, Gems, Agents)</strong> כדי לחשוב איתי.</p>
+                <p data-i18n="stage1Content2">השלב הזה מיועד ל:</p>
+                <ul class="bullet-list">
+                    <li data-i18n="stage1Item1">הבנה עמוקה של הבעיה</li>
+                    <li data-i18n="stage1Item2">שאילת שאלות טובות יותר</li>
+                    <li data-i18n="stage1Item3">הבהרת מטרות, אילוצים וסיכונים</li>
+                </ul>
+                <div class="quote-block" data-i18n="stage1Quote">כאן הבעיה הופכת מ"משהו מעורפל" ל<strong>אתגר מוצרי ברור</strong>.</div>
+            </div>
+        </div>
+
+        <!-- Stage 2: Research -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <div>
+                    <h2 class="section-title" data-i18n="stage2Title">גילוי ומחקר</h2>
+                    <span class="section-subtitle" data-i18n="stage2Subtitle">AI as a Research Team</span>
+                </div>
+            </div>
+            <div class="section-content">
+                <p data-i18n="stage2Content1">מהמוח המוצרי, אני מסתעף לנתיבי מחקר שונים בהתאם לצורך:</p>
+                <ul class="bullet-list">
+                    <li data-i18n="stage2Item1">שוק ומתחרים → עוזר מחקר שוק</li>
+                    <li data-i18n="stage2Item2">צרכי משתמשים ונקודות כאב → עוזר ראיונות ותובנות</li>
+                    <li data-i18n="stage2Item3">אילוצים טכניים → עוזר מוכוון פיתוח</li>
+                </ul>
+                <p data-i18n="stage2Content2">ב-AI אני משתמש כאן כדי:</p>
+                <ul class="bullet-list">
+                    <li data-i18n="stage2Use1">לסכם מידע</li>
+                    <li data-i18n="stage2Use2">להשוות בין אפשרויות</li>
+                    <li data-i18n="stage2Use3">לחלץ תובנות</li>
+                    <li data-i18n="stage2Use4">להפוך כאוס לבהירות</li>
+                </ul>
+                <div class="quote-block" data-i18n="stage2Quote">התוצאה: הבנה חדה של <strong>מה צריך לבנות ולמה</strong>.</div>
+            </div>
+        </div>
+
+        <!-- Stage 3: Ideation -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <div>
+                    <h2 class="section-title" data-i18n="stage3Title">אידיאציה ועיצוב פתרון</h2>
+                    <span class="section-subtitle" data-i18n="stage3Subtitle">Ideation & Solution Design</span>
+                </div>
+            </div>
+            <div class="section-content">
+                <p data-i18n="stage3Content1">ברגע שהבעיה ברורה, אני עובר ל<strong>יצירת רעיונות ועיצוב פתרונות</strong> עם AI.</p>
+                <p data-i18n="stage3Content2">כאן אני משתמש ב:</p>
+                <ul class="bullet-list">
+                    <li data-i18n="stage3Item1">עוזרי אידיאציה</li>
+                    <li data-i18n="stage3Item2">עוזרי UX ומוצר</li>
+                    <li data-i18n="stage3Item3">יצירת wireframes וזרימות ראשוניות</li>
+                </ul>
+                <div class="quote-block" data-i18n="stage3Quote">המטרה: להפוך תובנות ל<strong>כיוונים מוצריים אפשריים</strong>.</div>
+            </div>
+        </div>
+
+        <!-- Stage 4: Figma Make -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <div>
+                    <h2 class="section-title" data-i18n="stage4Title">מרעיון ל-UI</h2>
+                    <span class="section-subtitle" data-i18n="stage4Subtitle">Figma Make</span>
+                </div>
+            </div>
+            <div class="section-content">
+                <p data-i18n="stage4Content1">עכשיו אני עובר ל-<strong>Figma Make</strong> כדי:</p>
+                <ul class="bullet-list">
+                    <li data-i18n="stage4Item1">להפוך רעיונות ל-UI</li>
+                    <li data-i18n="stage4Item2">לייצר מסכים</li>
+                    <li data-i18n="stage4Item3">ליצור אלמנטים עיצוביים אמיתיים</li>
+                </ul>
+                <div class="quote-block" data-i18n="stage4Quote">ה-AI כבר לא רק חושב – הוא עכשיו <strong>מייצר UI</strong>.</div>
+            </div>
+        </div>
+
+        <!-- Stage 5: Cursor -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">5</div>
+                <div>
+                    <h2 class="section-title" data-i18n="stage5Title">מעיצוב למוצר</h2>
+                    <span class="section-subtitle" data-i18n="stage5Subtitle">Cursor</span>
+                </div>
+            </div>
+            <div class="section-content">
+                <p data-i18n="stage5Content1">מ-Figma Make, אני עובר ל-<strong>Cursor</strong> כדי:</p>
+                <ul class="bullet-list">
+                    <li data-i18n="stage5Item1">להפוך UI לקוד עובד</li>
+                    <li data-i18n="stage5Item2">להתאים לוגיקה</li>
+                    <li data-i18n="stage5Item3">לחבר זרימות</li>
+                    <li data-i18n="stage5Item4">לשלוח משהו אמיתי</li>
+                </ul>
+                <div class="quote-block" data-i18n="stage5Quote">זה המקום שבו <strong>עיצוב הופך למוצר</strong>.</div>
+            </div>
+        </div>
+
+        <!-- The Loop -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number loop">∞</div>
+                <div>
+                    <h2 class="section-title" data-i18n="loopTitle">הלולאה</h2>
+                    <span class="section-subtitle" data-i18n="loopSubtitle">The Loop</span>
+                </div>
+            </div>
+            <div class="section-content">
+                <p data-i18n="loopContent1">התהליך הזה <strong>לא ליניארי</strong>.</p>
+                <p data-i18n="loopContent2">AI מאפשר לי לחזור בלולאה:</p>
+                <ul class="bullet-list">
+                    <li data-i18n="loopItem1">מ-Cursor חזרה למחקר</li>
+                    <li data-i18n="loopItem2">מ-UI חזרה לאידיאציה</li>
+                    <li data-i18n="loopItem3">מגילוי חזרה להגדרת הבעיה</li>
+                </ul>
+                <div class="quote-block" data-i18n="loopQuote">זו <strong>מערכת חיה</strong>, לא זרימה חד-פעמית.</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p data-i18n="footerText">כך מעצב מוצרים מודרני עובד היום.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Translations
+        const translations = {
+            he: {
+                backToWorkshop: 'חזרה לסיכום הסדנא',
+                headerTag: 'תהליך עבודה',
+                headerTitle: 'איך אני בונה מוצרים עם AI',
+                headerSubtitle: 'תהליך עבודה מעשי – מבקשת פיצ\'ר ועד מוצר עובד',
+                introText: 'זה לא קסם ולא הימור על כלים חדשים. זו <strong>שיטת עבודה</strong> – תהליך חשיבה מובנה שמשתמש ב-AI בכל שלב, מהרגע שמגיעה בקשה ועד שמגיע מוצר עובד. העמוד הזה מציג את התהליך שלב אחרי שלב.',
+                emphasisText: 'זו לא קפיצה אקראית בין כלים – זו מערכת חשיבה.',
+                flowTitle: 'סקירת התהליך',
+                flowPrd: '📄 PRD / בקשה',
+                flowBrain: '🧠 AI Brain',
+                flowResearch: '🔍 מחקר',
+                flowIdeation: '💡 אידיאציה',
+                flowFigma: '🎨 Figma Make',
+                flowCursor: '⌨️ Cursor',
+                flowProduct: '🚀 מוצר',
+                flowLoopText: '↻ לולאה חוזרת – לא תהליך ליניארי',
+                startTitle: 'נקודת ההתחלה – הקלט',
+                startSubtitle: 'The Raw Problem',
+                startContent1: 'כל תהליך מתחיל ממשהו. זה יכול להיות:',
+                startItem1: 'בקשת פיצ\'ר מלקוח או מהצוות',
+                startItem2: 'מסמך PRD (Product Requirements Document)',
+                startItem3: 'בעיה עסקית שצריך לפתור',
+                startItem4: 'תלונת לקוח או משוב משתמשים',
+                startContent2: 'אני קורא לזה <strong>"הבעיה הגולמית"</strong> – החומר הגולמי שממנו מתחילים לבנות.',
+                stage1Title: 'מוח ה-AI למוצר',
+                stage1Subtitle: 'The AI Product Brain',
+                stage1Content1: 'לפני שמתחילים לעצב משהו, אני מפעיל <strong>עוזרי AI (GPTs, Gems, Agents)</strong> כדי לחשוב איתי.',
+                stage1Content2: 'השלב הזה מיועד ל:',
+                stage1Item1: 'הבנה עמוקה של הבעיה',
+                stage1Item2: 'שאילת שאלות טובות יותר',
+                stage1Item3: 'הבהרת מטרות, אילוצים וסיכונים',
+                stage1Quote: 'כאן הבעיה הופכת מ"משהו מעורפל" ל<strong>אתגר מוצרי ברור</strong>.',
+                stage2Title: 'גילוי ומחקר',
+                stage2Subtitle: 'AI as a Research Team',
+                stage2Content1: 'מהמוח המוצרי, אני מסתעף לנתיבי מחקר שונים בהתאם לצורך:',
+                stage2Item1: 'שוק ומתחרים → עוזר מחקר שוק',
+                stage2Item2: 'צרכי משתמשים ונקודות כאב → עוזר ראיונות ותובנות',
+                stage2Item3: 'אילוצים טכניים → עוזר מוכוון פיתוח',
+                stage2Content2: 'ב-AI אני משתמש כאן כדי:',
+                stage2Use1: 'לסכם מידע',
+                stage2Use2: 'להשוות בין אפשרויות',
+                stage2Use3: 'לחלץ תובנות',
+                stage2Use4: 'להפוך כאוס לבהירות',
+                stage2Quote: 'התוצאה: הבנה חדה של <strong>מה צריך לבנות ולמה</strong>.',
+                stage3Title: 'אידיאציה ועיצוב פתרון',
+                stage3Subtitle: 'Ideation & Solution Design',
+                stage3Content1: 'ברגע שהבעיה ברורה, אני עובר ל<strong>יצירת רעיונות ועיצוב פתרונות</strong> עם AI.',
+                stage3Content2: 'כאן אני משתמש ב:',
+                stage3Item1: 'עוזרי אידיאציה',
+                stage3Item2: 'עוזרי UX ומוצר',
+                stage3Item3: 'יצירת wireframes וזרימות ראשוניות',
+                stage3Quote: 'המטרה: להפוך תובנות ל<strong>כיוונים מוצריים אפשריים</strong>.',
+                stage4Title: 'מרעיון ל-UI',
+                stage4Subtitle: 'Figma Make',
+                stage4Content1: 'עכשיו אני עובר ל-<strong>Figma Make</strong> כדי:',
+                stage4Item1: 'להפוך רעיונות ל-UI',
+                stage4Item2: 'לייצר מסכים',
+                stage4Item3: 'ליצור אלמנטים עיצוביים אמיתיים',
+                stage4Quote: 'ה-AI כבר לא רק חושב – הוא עכשיו <strong>מייצר UI</strong>.',
+                stage5Title: 'מעיצוב למוצר',
+                stage5Subtitle: 'Cursor',
+                stage5Content1: 'מ-Figma Make, אני עובר ל-<strong>Cursor</strong> כדי:',
+                stage5Item1: 'להפוך UI לקוד עובד',
+                stage5Item2: 'להתאים לוגיקה',
+                stage5Item3: 'לחבר זרימות',
+                stage5Item4: 'לשלוח משהו אמיתי',
+                stage5Quote: 'זה המקום שבו <strong>עיצוב הופך למוצר</strong>.',
+                loopTitle: 'הלולאה',
+                loopSubtitle: 'The Loop',
+                loopContent1: 'התהליך הזה <strong>לא ליניארי</strong>.',
+                loopContent2: 'AI מאפשר לי לחזור בלולאה:',
+                loopItem1: 'מ-Cursor חזרה למחקר',
+                loopItem2: 'מ-UI חזרה לאידיאציה',
+                loopItem3: 'מגילוי חזרה להגדרת הבעיה',
+                loopQuote: 'זו <strong>מערכת חיה</strong>, לא זרימה חד-פעמית.',
+                footerText: 'כך מעצב מוצרים מודרני עובד היום.'
+            },
+            en: {
+                backToWorkshop: 'Back to Workshop Summary',
+                headerTag: 'Workflow',
+                headerTitle: 'How I Build Products with AI',
+                headerSubtitle: 'A Practical Workflow – From Feature Request to Working Product',
+                introText: 'This is not magic and not a bet on new tools. This is a <strong>method</strong> – a structured thinking process that uses AI at every step, from the moment a request arrives until a working product is delivered. This page presents the process step by step.',
+                emphasisText: 'This is not random tool hopping – this is a system.',
+                flowTitle: 'Process Overview',
+                flowPrd: '📄 PRD / Request',
+                flowBrain: '🧠 AI Brain',
+                flowResearch: '🔍 Research',
+                flowIdeation: '💡 Ideation',
+                flowFigma: '🎨 Figma Make',
+                flowCursor: '⌨️ Cursor',
+                flowProduct: '🚀 Product',
+                flowLoopText: '↻ Recurring loop – not a linear process',
+                startTitle: 'Starting Point – The Input',
+                startSubtitle: 'The Raw Problem',
+                startContent1: 'Every process starts with something. It could be:',
+                startItem1: 'A feature request from a client or team',
+                startItem2: 'A PRD (Product Requirements Document)',
+                startItem3: 'A business problem that needs solving',
+                startItem4: 'A customer complaint or user feedback',
+                startContent2: 'I call this <strong>"The Raw Problem"</strong> – the raw material from which we start building.',
+                stage1Title: 'The AI Product Brain',
+                stage1Subtitle: 'The AI Product Brain',
+                stage1Content1: 'Before designing anything, I activate <strong>AI Assistants (GPTs, Gems, Agents)</strong> to think with me.',
+                stage1Content2: 'This stage is for:',
+                stage1Item1: 'Deep understanding of the problem',
+                stage1Item2: 'Asking better questions',
+                stage1Item3: 'Clarifying goals, constraints, and risks',
+                stage1Quote: 'Here the problem transforms from "something vague" to a <strong>clear product challenge</strong>.',
+                stage2Title: 'Discovery & Research',
+                stage2Subtitle: 'AI as a Research Team',
+                stage2Content1: 'From the product brain, I branch into different research paths depending on the need:',
+                stage2Item1: 'Market & competitors → market research assistant',
+                stage2Item2: 'User needs & pain points → interview & insight assistant',
+                stage2Item3: 'Technical constraints → dev-oriented assistant',
+                stage2Content2: 'I use AI here to:',
+                stage2Use1: 'Summarize information',
+                stage2Use2: 'Compare options',
+                stage2Use3: 'Extract insights',
+                stage2Use4: 'Turn chaos into clarity',
+                stage2Quote: 'The output: a sharp understanding of <strong>what should be built and why</strong>.',
+                stage3Title: 'Ideation & Solution Design',
+                stage3Subtitle: 'Ideation & Solution Design',
+                stage3Content1: 'Once the problem is clear, I move into <strong>idea generation and solution shaping</strong> with AI.',
+                stage3Content2: 'Here I use:',
+                stage3Item1: 'Ideation agents',
+                stage3Item2: 'UX & Product assistants',
+                stage3Item3: 'Early wireframe / flow generation',
+                stage3Quote: 'The goal: turn insights into <strong>possible product directions</strong>.',
+                stage4Title: 'From Idea to UI',
+                stage4Subtitle: 'Figma Make',
+                stage4Content1: 'Now I move into <strong>Figma Make</strong> to:',
+                stage4Item1: 'Turn ideas into UI',
+                stage4Item2: 'Generate screens',
+                stage4Item3: 'Create real design artifacts',
+                stage4Quote: 'AI is no longer just thinking – it is now <strong>producing UI</strong>.',
+                stage5Title: 'From Design to Product',
+                stage5Subtitle: 'Cursor',
+                stage5Content1: 'From Figma Make, I move into <strong>Cursor</strong> to:',
+                stage5Item1: 'Turn UI into working code',
+                stage5Item2: 'Adjust logic',
+                stage5Item3: 'Connect flows',
+                stage5Item4: 'Ship something real',
+                stage5Quote: 'This is where <strong>design becomes product</strong>.',
+                loopTitle: 'The Loop',
+                loopSubtitle: 'The Loop',
+                loopContent1: 'This process is <strong>not linear</strong>.',
+                loopContent2: 'AI allows me to loop:',
+                loopItem1: 'From Cursor back to research',
+                loopItem2: 'From UI back to ideation',
+                loopItem3: 'From discovery back to problem definition',
+                loopQuote: 'This is a <strong>living system</strong>, not a one-time flow.',
+                footerText: 'This is how a modern product designer actually works today.'
+            }
+        };
+
+        // Language switching
+        function setLanguage(lang) {
+            const html = document.documentElement;
+            html.dir = lang === 'he' ? 'rtl' : 'ltr';
+            html.lang = lang;
+
+            document.querySelectorAll('.lang-btn').forEach(btn =>
+                btn.classList.toggle('active', btn.dataset.lang === lang));
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+
+            document.title = lang === 'he'
+                ? 'איך אני בונה מוצרים עם AI – תהליך עבודה מעשי'
+                : 'How I Build Products with AI – A Practical Workflow';
+
+            localStorage.setItem('preferredLang', lang);
+        }
+
+        // Initialize language from localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('preferredLang') || 'he';
+            setLanguage(savedLang);
+        });
+
+        // Wavy background animation (Perlin noise)
+        function createNoise3D() {
+            const permutation = [];
+            for (let i = 0; i < 256; i++) permutation[i] = i;
+            for (let i = 255; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [permutation[i], permutation[j]] = [permutation[j], permutation[i]];
+            }
+            const p = [...permutation, ...permutation];
+
+            function fade(t) { return t * t * t * (t * (t * 6 - 15) + 10); }
+            function lerp(a, b, t) { return a + t * (b - a); }
+            function grad(hash, x, y, z) {
+                const h = hash & 15;
+                const u = h < 8 ? x : y;
+                const v = h < 4 ? y : h === 12 || h === 14 ? x : z;
+                return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
+            }
+
+            return function(x, y, z) {
+                const X = Math.floor(x) & 255;
+                const Y = Math.floor(y) & 255;
+                const Z = Math.floor(z) & 255;
+                x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z);
+                const u = fade(x), v = fade(y), w = fade(z);
+                const A = p[X] + Y, AA = p[A] + Z, AB = p[A + 1] + Z;
+                const B = p[X + 1] + Y, BA = p[B] + Z, BB = p[B + 1] + Z;
+                return lerp(
+                    lerp(lerp(grad(p[AA], x, y, z), grad(p[BA], x - 1, y, z), u),
+                         lerp(grad(p[AB], x, y - 1, z), grad(p[BB], x - 1, y - 1, z), u), v),
+                    lerp(lerp(grad(p[AA + 1], x, y, z - 1), grad(p[BA + 1], x - 1, y, z - 1), u),
+                         lerp(grad(p[AB + 1], x, y - 1, z - 1), grad(p[BB + 1], x - 1, y - 1, z - 1), u), v), w);
+            };
+        }
+
+        class WavyBackground {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                if (!this.canvas) return;
+
+                this.ctx = this.canvas.getContext('2d');
+                this.noise = createNoise3D();
+                this.nt = 0;
+                this.waveColors = ['#6366f1', '#8b5cf6', '#a855f7', '#c084fc', '#3b82f6'];
+                this.waveWidth = 50;
+                this.blur = 10;
+                this.speed = 0.001;
+                this.waveOpacity = 0.5;
+                this.backgroundFill = '#16161a';
+
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+                this.render();
+            }
+
+            resize() {
+                const rect = this.canvas.parentElement.getBoundingClientRect();
+                this.canvas.width = rect.width;
+                this.canvas.height = rect.height;
+            }
+
+            drawWave(n) {
+                for (let i = 0; i < n; i++) {
+                    this.ctx.beginPath();
+                    this.ctx.lineWidth = this.waveWidth;
+                    this.ctx.strokeStyle = this.waveColors[i % this.waveColors.length];
+
+                    for (let x = 0; x < this.canvas.width; x += 5) {
+                        const y = this.noise(x / 800, 0.3 * i, this.nt) * 100 +
+                                  this.canvas.height * (0.5 + i * 0.05);
+                        if (x === 0) {
+                            this.ctx.moveTo(x, y);
+                        } else {
+                            this.ctx.lineTo(x, y);
+                        }
+                    }
+                    this.ctx.stroke();
+                    this.ctx.closePath();
+                }
+            }
+
+            render() {
+                this.ctx.fillStyle = this.backgroundFill;
+                this.ctx.globalAlpha = 1;
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                this.ctx.filter = `blur(${this.blur}px)`;
+                this.ctx.globalAlpha = this.waveOpacity;
+                this.nt += this.speed;
+                this.drawWave(5);
+
+                this.ctx.filter = 'none';
+                this.animationId = requestAnimationFrame(() => this.render());
+            }
+        }
+
+        // Initialize wavy background
+        new WavyBackground('wavy-canvas');
+    </script>
+</body>
+</html>

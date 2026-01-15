@@ -243,6 +243,16 @@
       box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
     }
 
+    .tab-btn.tab-link {
+      text-decoration: none;
+      border: 1px dashed var(--border-light);
+    }
+
+    .tab-btn.tab-link:hover {
+      border-color: var(--accent-secondary);
+      background: rgba(139, 92, 246, 0.1);
+    }
+
     .tab-icon {
       font-size: 20px;
     }
@@ -750,6 +760,10 @@
         <span class="tab-icon">⚡</span>
         <span data-i18n="tabSkills">Claude Skills (יכולות)</span>
       </button>
+      <a href="workflow.html" class="tab-btn tab-link">
+        <span class="tab-icon">🔄</span>
+        <span data-i18n="tabWorkflow">תהליך העבודה שלי</span>
+      </a>
     </div>
 
     <!-- Tab 1: Summary -->
@@ -2103,6 +2117,7 @@ workflow or troubleshoot issues.
         tabDownload: 'הורדת מצגת',
         tabCursor: 'הסבר על Cursor',
         tabSkills: 'Claude Skills (יכולות)',
+        tabWorkflow: 'תהליך העבודה שלי',
 
         // Summary Tab - Intro
         introTitle: 'שמירה על המומנטום',
@@ -2438,6 +2453,7 @@ workflow or troubleshoot issues.
         tabDownload: 'Download Presentation',
         tabCursor: 'About Cursor',
         tabSkills: 'Claude Skills (Abilities)',
+        tabWorkflow: 'My Workflow',
 
         // Summary Tab - Intro
         introTitle: 'Keep the Momentum',
